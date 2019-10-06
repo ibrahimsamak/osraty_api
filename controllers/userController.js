@@ -163,6 +163,26 @@ exports.addUser = async (req, reply) => {
                     fcmToken: req.body.fcmToken
                 });
                 let rs = await _Users.save();
+                const _Users = await Users.findByIdAndUpdate((rs._id), {
+                    gender: req.body.gender,
+                    social_status: req.body.social_status,
+                    has_children: req.body.has_children,
+                    children_no: req.body.children_no,
+                    createAt: Date(),
+                    isBlock: false,
+                    isWork: req.body.isWork,
+                    work_type: req.body.work_type,
+                    house_type: req.body.house_type,
+                    income: req.body.income,
+                    isObligation: req.body.isObligation,
+                    Obligation: req.body.Obligation,
+                    number_of_dependents: req.body.number_of_dependents,
+                    benefit_no: req.body.benefit_no,
+                    payment_for_no: req.body.payment_for_no,
+                    notes: req.body.notes,
+                    isActivate: req.body.isActivate,
+                    payment_for: req.body.payment_for
+                }, { new: true })
                 const response = {
                     status_code: 200,
                     status: true,
@@ -184,6 +204,13 @@ exports.addUser = async (req, reply) => {
                 });
 
                 let rs = await _Admins.save();
+                const _Admins = await Admins.findByIdAndUpdate((rs._id), {
+                    createAt: Date(),
+                    paymentMethod_type: req.body.paymentMethod_type,
+                    ammount: req.body.ammount,
+                    paymentMethod_id: req.body.paymentMethod_id,
+                    type: req.body.type
+                }, { new: true })
                 const response = {
                     status_code: 200,
                     status: true,

@@ -166,26 +166,37 @@ exports.addRequest = async (req, reply) => {
         // 2: accept 
         // 3: reject admin 
         // 4: stopped by user
+        // 5: finish
+        let prevRequest = await requests.findOne({ user_id: req.body.user_id })
+        if (prevRequest.status == 1 || prevRequest.status == 2) {
+            const response = {
+                status_code: 400,
+                status: false,
+                message: 'عذرا .. لا يمكن الطلب الان يوجد لديكم طلب سابقا',
+                items: rs
+            }
+            return response
+        } else {
+            let _requests = new requests({
+                user_id: req.body.user_id,
+                status: 1,
+                createAt: Date(),
+                ammount: req.body.ammount,
+                notes: req.body.notes,
+                // startDate: req.body.startDate,
+                // endDate: req.body.endDate,
+                type: req.body.type
+            });
 
-        let _requests = new requests({
-            user_id: req.body.user_id,
-            status: 1,
-            createAt: Date(),
-            ammount: req.body.ammount,
-            notes: req.body.notes,
-            // startDate: req.body.startDate,
-            // endDate: req.body.endDate,
-            type: req.body.type
-        });
-
-        let rs = await _requests.save();
-        const response = {
-            status_code: 200,
-            status: true,
-            message: 'تمت العملية بنجاح',
-            items: rs
+            let rs = await _requests.save();
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'تمت العملية بنجاح',
+                items: rs
+            }
+            return response
         }
-        return response
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -199,22 +210,35 @@ exports.updateRequest = async (req, reply) => {
         // 2: accept 
         // 3: reject admin 
         // 4: stopped by user
+        // 5: finish
 
-        const _requests = await requests.findByIdAndUpdate((req.body.id), {
-            ammount: req.body.ammount,
-            status: req.body.status,
-            startDate: req.body.startDate,
-            endDate: req.body.endDate,
-            notes: ''
-        }, { new: true })
+        let prevRequest = await requests.findById(req.body.id)
+        if (prevRequest.status == 2) {
+            const _requests = await requests.findByIdAndUpdate((req.body.id), {
+                ammount: req.body.ammount,
+                status: req.body.status,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
+                notes: ''
+            }, { new: true })
 
-        const response = {
-            status_code: 200,
-            status: true,
-            message: 'تمت العميلة بنجاح',
-            items: _requests
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'تمت العميلة بنجاح',
+                items: _requests
+            }
+            return response
+        } else {
+            const response = {
+                status_code: 400,
+                status: false,
+                message: 'عذرا .. لا يمكن ايقاف الخدمة لانها قيد الدراسة',
+                items: _requests
+            }
+            return response
         }
-        return response
+
     } catch (err) {
         throw boom.boomify(err)
     }
