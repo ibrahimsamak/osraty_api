@@ -163,7 +163,7 @@ exports.addUser = async (req, reply) => {
                     fcmToken: req.body.fcmToken
                 });
                 let rs = await _Users.save();
-                const _Users = await Users.findByIdAndUpdate((rs._id), {
+                await Users.findByIdAndUpdate((rs._id), {
                     gender: req.body.gender,
                     social_status: req.body.social_status,
                     has_children: req.body.has_children,
@@ -204,7 +204,7 @@ exports.addUser = async (req, reply) => {
                 });
 
                 let rs = await _Admins.save();
-                const _Admins = await Admins.findByIdAndUpdate((rs._id), {
+                await Admins.findByIdAndUpdate((rs._id), {
                     createAt: Date(),
                     paymentMethod_type: req.body.paymentMethod_type,
                     ammount: req.body.ammount,
