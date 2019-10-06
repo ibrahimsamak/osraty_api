@@ -132,14 +132,8 @@ LocationIQGeocoder.prototype._formatResult = function(result) {
     transformedResult.zipcode = result.address.postcode;
     transformedResult.streetName = result.address.road || result.address.cycleway;
     transformedResult.streetNumber = result.address.house_number;
-    
     // make sure countrycode is always uppercase to keep node-geocoder api formats
-    var countryCode = result.address.country_code;
-    if (countryCode) {
-        countryCode = countryCode.toUpperCase();
-    }
-    
-    transformedResult.countryCode = countryCode;
+    transformedResult.countryCode = result.address.country_code.toUpperCase();
   }
   return transformedResult;
 };
