@@ -316,7 +316,7 @@ exports.loginUser = async (req, reply) => {
             }
             return response
         } else if (_Admin) {
-            await Users.findByIdAndUpdate((_Admin._id), {
+            await Admins.findByIdAndUpdate((_Admin._id), {
                 fcmToken: req.body.fcmToken,
             }, { new: true })
 
