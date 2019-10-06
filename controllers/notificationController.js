@@ -9,17 +9,18 @@ exports.getNotfications = async (req, reply) => {
     var page = parseInt(req.query.page, 10)
     var limit = parseInt(req.query.limit, 10)
 
-    const user_id = req.params.id
-    const total = await Notifications.find({ $and: [{ user_id: user_id }] }).count();
+    var user_id = req.params.id
+    const total = await Notifications.find({ user_id: user_id }).count();
 
-    await Notifications.find({ $and: [{ user_id: user_id }] })
+    await Notifications.find({ user_id: user_id })
       .sort({ _id: -1 })
       .skip((page) * limit)
       .limit(limit)
       .exec(function (err, result) {
+        console.log(result)
         const response = {
           items: result,
-          status:true,
+          status: true,
           status_code: 200,
           message: 'returned successfully',
           pagenation: {

@@ -7,7 +7,7 @@ const Notificationschema = mongoose.Schema({
         required: false
     },
     user_id: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'users'
+        type: String
     },
     title: {
         type: String,
@@ -37,6 +37,6 @@ const Notificationschema = mongoose.Schema({
 
 
 Notificationschema.index({ "user_id": 1, "isRead": 1 })
-const Notifications = mongoose.model('Notification', Notificationschema);
+const Notifications = mongoose.model('notifications', Notificationschema);
 
 exports.Notifications = Notifications;
