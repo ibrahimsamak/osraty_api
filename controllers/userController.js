@@ -299,8 +299,8 @@ exports.updateUser = async (req, reply) => {
 exports.loginUser = async (req, reply) => {
     try {
         const pass = encryptPassword(req.body.password)
-        const _Users = await Users.findOne({ $and: [{ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }, { password: pass }] })
-        const _Admin = await Admins.findOne({ $and: [{ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }, { password: pass }] })
+        const _Users = await Users.findOne({ $and: [{ email: req.body.email }, { password: pass }] })
+        const _Admin = await Admins.findOne({ $and: [{ email: req.body.email }, { password: pass }] })
 
         if (_Users) {
             await Users.findByIdAndUpdate((_Users._id), {
