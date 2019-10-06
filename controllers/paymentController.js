@@ -119,7 +119,7 @@ exports.getPaymentAdmin = async (req, reply) => {
             .exec(function (err, result) {
                 const response = {
                     items: result,
-                    stauts: true,
+                    status: true,
                     status_code: 200,
                     message: 'returned successfully',
                     pagenation: {
