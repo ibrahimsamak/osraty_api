@@ -17,7 +17,6 @@ exports.getNotfications = async (req, reply) => {
       .skip((page) * limit)
       .limit(limit)
       .exec(function (err, result) {
-        console.log(result)
         const response = {
           items: result,
           status: true,
