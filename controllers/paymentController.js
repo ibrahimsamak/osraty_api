@@ -140,7 +140,13 @@ exports.getPaymentAdmin = async (req, reply) => {
 // de-activate payments
 exports.deActivate = async (req, reply) => {
     try {
-        const _payments = await payments.findByIdAndUpdate((req.body.id), {
+        const LastPayments = await payments.find({ $and: [{ user_id: req.body.user_id }, { isActive: true }] }).sort({ id: -1 })
+        .limit(1)
+        var id = ""
+        if (LastPayments.length > 0){
+            id = LastPayments[0]._id
+        }
+        const _payments = await payments.findByIdAndUpdate((id), {
             isActive: false
         }, { new: true })
 
@@ -155,8 +161,6 @@ exports.deActivate = async (req, reply) => {
         throw boom.boomify(err)
     }
 }
-
-
 
 
 //add request
@@ -214,7 +218,7 @@ exports.updateRequest = async (req, reply) => {
         // 5: finish
 
         let prevRequest = await requests.findById(req.body.id)
-        if (prevRequest.status == 2) {
+        if (prevRequest.status != 2) {
             const _requests = await requests.findByIdAndUpdate((req.body.id), {
                 ammount: req.body.ammount,
                 status: req.body.status,
@@ -275,7 +279,6 @@ exports.getRequestAllForAdmin = async (req, reply) => {
         throw boom.boomify(err)
     }
 }
-
 
 // Get search
 exports.getRequsetSearch = async (req, reply) => {

@@ -150,7 +150,7 @@ exports.addUser = async (req, reply) => {
             return response
         } else {
 
-            if (req.body.type == 'user') {
+            if (req.body.user_type == 'user') {
                 let _Users = new Users({
                     full_name: req.body.full_name,
                     email: req.body.email,
@@ -160,7 +160,8 @@ exports.addUser = async (req, reply) => {
                     token: jwt.sign({ _id: req.body.id }, config.get('jwtPrivateKey'), {
                         expiresIn: '365d'
                     }),
-                    fcmToken: req.body.fcmToken
+                    fcmToken: req.body.fcmToken,
+                    user_type: req.body.user_type
                 });
                 let rs = await _Users.save();
                 await Users.findByIdAndUpdate((rs._id), {
@@ -181,7 +182,7 @@ exports.addUser = async (req, reply) => {
                     payment_for_no: req.body.payment_for_no,
                     notes: req.body.notes,
                     isActivate: req.body.isActivate,
-                    payment_for: req.body.payment_for
+                    payment_for: req.body.payment_for,
                 }, { new: true })
                 const response = {
                     status_code: 200,
@@ -201,6 +202,7 @@ exports.addUser = async (req, reply) => {
                     token: jwt.sign({ _id: req.body.id }, config.get('jwtPrivateKey'), {
                         expiresIn: '365d'
                     }),
+                    user_type: req.body.user_type
                 });
 
                 let rs = await _Admins.save();
