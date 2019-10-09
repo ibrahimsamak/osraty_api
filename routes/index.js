@@ -167,7 +167,7 @@ const routes = [
     handler: constantController.deleteJobs
   },
 
-  
+
   {
     method: 'GET',
     url: '/api/constant',
@@ -423,6 +423,11 @@ const routes = [
     url: '/api/PaymentByAdmin/:id',
     handler: paymentController.getPaymentAdmin
   },
+  {
+    method: 'POST',
+    url: '/api/getlast20PaymentForUser',
+    handler: paymentController.getlast20PaymentForUser
+  },
 
 
 
@@ -438,6 +443,11 @@ const routes = [
     handler: paymentController.updateRequest
   },
   {
+    method: 'POST',
+    url: '/api/updateRequestByAdmin',
+    handler: paymentController.updateRequestByAdmin
+  },
+  {
     method: 'GET',
     url: '/api/Request/:id',
     handler: paymentController.getSingleRequest
@@ -447,7 +457,7 @@ const routes = [
     url: '/api/LastRequest/:id',
     handler: paymentController.getLastRequest
   },
-  
+
   {
     method: 'GET',
     url: '/api/RequestBySuperAdmin',
@@ -457,6 +467,11 @@ const routes = [
     method: 'GET',
     url: '/api/RequestByUser/:id',
     handler: paymentController.getRequestUser
+  },
+  {
+    method: 'GET',
+    url: '/api/getActiveRequestUser/:id',
+    handler: paymentController.getActiveRequestUser
   },
   {
     method: 'POST',

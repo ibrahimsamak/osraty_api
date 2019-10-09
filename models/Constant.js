@@ -1,6 +1,15 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
+
+
+const settingsSchema = mongoose.Schema({
+  persons: {
+    type: Number,
+  }
+}, { versionKey: false });
+
+
 const paymentMethodSchema = mongoose.Schema({
   name: {
     type: String,
@@ -54,6 +63,7 @@ const loans = mongoose.model('loan', categorySchema);
 const StaticPage = mongoose.model('StaticPage', StaticPageSchema);
 const ContactOption = mongoose.model('ContactOption', ContactOptionSchema);
 const Jobs = mongoose.model('Jobs', categorySchema);
+const Settings = mongoose.model('settings', settingsSchema);
 
 
 exports.paymentMethods = paymentMethod;
@@ -63,4 +73,5 @@ exports.loans = loans;
 exports.StaticPage = StaticPage;
 exports.ContactOption = ContactOption;
 exports.jobs = Jobs;
+exports.settings = Settings;
 

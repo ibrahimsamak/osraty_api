@@ -1,6 +1,6 @@
 const moment = require('moment')
 const boom = require('boom')
-const { payments, requests } = require('../models/Payment')
+const { payments, requests, request_approve } = require('../models/Payment')
 const { Users } = require('../models/User')
 const { Admins } = require('../models/Admin')
 
@@ -176,6 +176,38 @@ exports.deActivate = async (req, reply) => {
     }
 }
 
+// get last 20 payments for user in cp 
+exports.getlast20PaymentForUser = async (req, reply) => {
+    try {
+        var totalPayment = 0
+        await payments.find({ $and: [{ to_user: req.body.to_user }, { methodFor: req.body.methodFor }, { isActive: true }] }).sort({ _id: -1 })
+            .exec(function (err, result) {
+                result.forEach(element => {
+                    totalPayment += element.ammount
+                });
+            })
+
+        await payments.find({ $and: [{ to_user: req.body.to_user }, { methodFor: req.body.methodFor }, { isActive: true }] }).sort({ _id: -1 })
+            .populate('from_user')
+            .populate('methodType')
+            .populate('methodFor')
+            .limit(20)
+            .exec(function (err, result) {
+                const response = {
+                    items: result,
+                    total_payment: totalPayment,
+                    status: true,
+                    status_code: 200,
+                    message: 'returned successfully'
+                }
+                reply.send(response)
+            });
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
 
 //add request
 exports.addRequest = async (req, reply) => {
@@ -186,16 +218,38 @@ exports.addRequest = async (req, reply) => {
         // 3: reject admin 
         // 4: stopped by user
         // 5: finish
+
         let prevRequest = await requests.find({ user_id: req.body.user_id }).sort({ _id: -1 })
-        console.log(prevRequest[0])
-        if (prevRequest[0].status == 1 || prevRequest[0].status == 2) {
-            const response = {
-                status_code: 400,
-                status: false,
-                message: 'عذرا .. لا يمكن الطلب الان يوجد لديكم طلب سابقا',
-                items: null
+        if (prevRequest.length > 0) {
+            if (prevRequest[0].status == 1 || prevRequest[0].status == 2) {
+                const response = {
+                    status_code: 400,
+                    status: false,
+                    message: 'عذرا .. لا يمكن الطلب الان يوجد لديكم طلب سابقا',
+                    items: null
+                }
+                return response
+            } else {
+                let _requests = new requests({
+                    user_id: req.body.user_id,
+                    status: 1,
+                    createAt: Date(),
+                    ammount: req.body.ammount,
+                    notes: req.body.notes,
+                    // startDate: req.body.startDate,
+                    // endDate: req.body.endDate,
+                    type: req.body.type
+                });
+
+                let rs = await _requests.save();
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'تمت العملية بنجاح',
+                    items: rs
+                }
+                return response
             }
-            return response
         } else {
             let _requests = new requests({
                 user_id: req.body.user_id,
@@ -263,6 +317,67 @@ exports.updateRequest = async (req, reply) => {
         throw boom.boomify(err)
     }
 }
+
+exports.updateRequestByAdmin = async (req, reply) => {
+    try {
+        // stauts 
+        // 1: new order 
+        // 2: accept 
+        // 3: reject admin 
+        // 4: stopped by user
+        // 5: finish
+
+        var approve = false
+        const prevApprove = await request_approve.findOne({ $and: [{ superAdmin_id: req.body.superAdmin_id }, { request_id: req.body.request_id }] })
+        if (prevApprove) {
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'تم الاعتماد مسبقا',
+                items: null
+            }
+            return response
+        } else {
+            if (req.body.status == 2) {
+                approve = true
+                let _request_approve = new request_approve({
+                    superAdmin_id: req.body.superAdmin_id,
+                    request_id: req.body.request_id,
+                    approve: approve
+                });
+                await _request_approve.save();
+            } else if (req.body.status == 3) {
+                approve = false
+                let _request_approve = new request_approve({
+                    superAdmin_id: req.body.superAdmin_id,
+                    request_id: req.body.rrequest_id,
+                    approve: approve
+                });
+                await _request_approve.save();
+            }
+
+            const _requests = await requests.findByIdAndUpdate((req.body.id), {
+                ammount: req.body.ammount,
+                status: req.body.status,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
+                notes: ''
+            }, { new: true })
+
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'تمت العميلة بنجاح',
+                items: _requests
+            }
+            return response
+        }
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
 
 // get request for super admins
 exports.getRequestAllForAdmin = async (req, reply) => {
@@ -426,17 +541,45 @@ exports.getSingleRequest = async (req, reply) => {
 //get single request
 exports.getLastRequest = async (req, reply) => {
     try {
-        const _requests = await requests.find({ user_id: req.params.id })
+        var totalPayment = 0
+        await requests.findById(req.params.id).exec(async function (err, _result) {
+            console.log(_result)
+            await payments.find({ $and: [{ to_user: _result.user_id }, { methodFor: _result.type }, { isActive: true }] }).sort({ _id: -1 })
+                .exec(function (err, result) {
+                    console.log(result)
+                    result.forEach(element => {
+                        totalPayment += element.ammount
+                    });
+                    const response = {
+                        status_code: 200,
+                        status: true,
+                        totalPayment: totalPayment,
+                        message: 'تمت العملية بنجاح',
+                        items: _result
+                    }
+                    reply.send(response)
+                })
+        })
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+//get active request for user
+exports.getActiveRequestUser = async (req, reply) => {
+    try {
+        await requests.find({ $and: [{ user_id: req.params.id }, { status: 2 }] }).sort({ _id: -1 })
             .populate('user_id')
             .populate('type')
-            .limit(1)
-        const response = {
-            status_code: 200,
-            status: true,
-            message: 'تمت العملية بنجاح',
-            items: _requests
-        }
-        return response
+            .exec(function (err, result) {
+                const response = {
+                    items: result,
+                    status_code: 200,
+                    message: 'returned successfully'
+                }
+                reply.send(response)
+            })
+
     } catch (err) {
         throw boom.boomify(err)
     }

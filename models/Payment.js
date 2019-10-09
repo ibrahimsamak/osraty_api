@@ -65,8 +65,25 @@ const RequestSchema = mongoose.Schema({
     }
 }, { versionKey: false });
 
+const RequestApproveSchema = mongoose.Schema({
+    superAdmin_id: {
+        type: String
+    },
+    approve: {
+        type: Boolean
+    },
+    request_id: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'requests'
+    }
+}, { versionKey: false });
+
+
 RequestSchema.plugin(mongooseAggregatePaginate);
 const payment = mongoose.model('payments', PaymetSchema)
 const request = mongoose.model('requests', RequestSchema)
+const request_approve = mongoose.model('request_approve', RequestApproveSchema)
+
+
 exports.requests = request;
 exports.payments = payment; 
+exports.request_approve = request_approve; 
