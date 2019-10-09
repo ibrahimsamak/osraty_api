@@ -440,39 +440,39 @@ exports.forgetPasswordAdmins = async (req, reply) => {
 //reset password
 exports.resetPasswordAdmins = async (req, reply) => {
     try {
-        const pervAdminEmail = await Admins.findOne({ phone_number: req.body.phone_number }).lean()
-        const pervUserEmail = await Users.findOne({ phone_number: req.body.phone_number }).lean()
-        if (pervAdminEmail) {
-            // emeail is exsits 
-            const response = {
-                status_code: 400,
-                status: false,
-                message: 'رقم الجوال موجود مسبقا',
-                items: null
-            }
-            return response
-        } else if (pervUserEmail) {
-            // emeail is exsits 
-            const response = {
-                status_code: 400,
-                status: false,
-                message: 'رقم الجوال موجود مسبقا',
-                items: null
-            }
-            return response
-        } else {
-            const pass = encryptPassword(req.body.password)
-            const _user = await Admins.findByIdAndUpdate((req.body.id), {
-                password: pass
-            }, { new: true })
-            const response = {
-                status_code: 200,
-                status: true,
-                message: 'return succssfully',
-                items: _user
-            }
-            return response
+        // const pervAdminEmail = await Admins.findOne({ phone_number: req.body.phone_number }).lean()
+        // const pervUserEmail = await Users.findOne({ phone_number: req.body.phone_number }).lean()
+        // if (pervAdminEmail) {
+        //     // emeail is exsits 
+        //     const response = {
+        //         status_code: 400,
+        //         status: false,
+        //         message: 'رقم الجوال موجود مسبقا',
+        //         items: null
+        //     }
+        //     return response
+        // } else if (pervUserEmail) {
+        //     // emeail is exsits 
+        //     const response = {
+        //         status_code: 400,
+        //         status: false,
+        //         message: 'رقم الجوال موجود مسبقا',
+        //         items: null
+        //     }
+        //     return response
+        // } else {
+        const pass = encryptPassword(req.body.password)
+        const _user = await Admins.findByIdAndUpdate((req.body.id), {
+            password: pass
+        }, { new: true })
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: _user
         }
+        return response
+        // }
     } catch (err) {
         throw boom.boomify(err)
     }
