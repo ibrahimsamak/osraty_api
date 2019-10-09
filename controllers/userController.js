@@ -686,8 +686,8 @@ exports.forgetPassword = async (req, reply) => {
 //reset password
 exports.resetPasswordUsers = async (req, reply) => {
     try {
-        let pervAdminEmail = await Admins.find({ phone_number: req.body.phone_number }).lean()
-        let pervUserEmail = await Users.find({ phone_number: req.body.phone_number }).lean()
+        const pervAdminEmail = await Admins.findOne({ phone_number: req.body.phone_number }).lean()
+        const pervUserEmail = await Users.findOne({ phone_number: req.body.phone_number }).lean()
         if (pervAdminEmail) {
             // emeail is exsits 
             const response = {
@@ -727,8 +727,8 @@ exports.resetPasswordUsers = async (req, reply) => {
 //reset email
 exports.resetEmailUsers = async (req, reply) => {
     try {
-        let pervAdminEmail = await Admins.find({ email: req.body.email }).lean()
-        let pervUserEmail = await Users.find({ email: req.body.email }).lean()
+        const pervAdminEmail = await Admins.findOne({ email: req.body.email }).lean()
+        const pervUserEmail = await Users.findOne({ email: req.body.email }).lean()
         if (pervAdminEmail) {
             // emeail is exsits 
             const response = {
