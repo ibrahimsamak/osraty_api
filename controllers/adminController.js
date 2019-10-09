@@ -137,7 +137,7 @@ exports.addAdmins = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'البريد الالكتروني او رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else if (pervUserEmail) {
@@ -146,7 +146,7 @@ exports.addAdmins = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'البريد الالكتروني او رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else {
@@ -448,7 +448,7 @@ exports.resetPasswordAdmins = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else if (pervUserEmail) {
@@ -457,7 +457,7 @@ exports.resetPasswordAdmins = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else {
@@ -489,7 +489,7 @@ exports.resetEmailAdmins = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'الايميل موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else if (pervUserEmail) {
@@ -498,7 +498,7 @@ exports.resetEmailAdmins = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'الايميل موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else {

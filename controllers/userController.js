@@ -25,6 +25,16 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+function makeid() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 6; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 // Get all Users
 exports.getUsers = async (req, reply) => {
     try {
@@ -136,7 +146,7 @@ exports.addUser = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'البريد الالكتروني او رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else if (pervUserEmail) {
@@ -145,7 +155,7 @@ exports.addUser = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'البريد الالكتروني او رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else {
@@ -334,7 +344,7 @@ exports.loginUser = async (req, reply) => {
             const response = {
                 status_code: 400,
                 status: false,
-                message: 'email or passord are incorret',
+                message: 'خطأ في معلومات الدخول',
                 items: _Admins
             }
             return response
@@ -349,8 +359,10 @@ exports.forgetPassword = async (req, reply) => {
     try {
         const _Users = await Users.findOne({ $and: [{ email: req.body.email }, { phone_number: req.body.phone_number }] })
         const _Admins = await Admins.findOne({ $and: [{ email: req.body.email }, { phone_number: req.body.phone_number }] })
+        var newPassword = makeid();
+
         if (_Users) {
-            var newPassword = makeid();
+            console.log(_Users)
             const update = await Users.findByIdAndUpdate(_Users._id, { password: newPassword }, { new: true })
             var msg = `
            <!DOCTYPE html>
@@ -503,8 +515,8 @@ exports.forgetPassword = async (req, reply) => {
             }
             return response
         } else if (_Admins) {
-            var newPassword = makeid();
-            const update = await Users.findByIdAndUpdate(_Users._id, { password: newPassword }, { new: true })
+            console.log(_Admins)
+            const update = await Admins.findByIdAndUpdate(Admins._id, { password: newPassword }, { new: true })
             var msg = `
            <!DOCTYPE html>
 <html>
@@ -549,7 +561,7 @@ exports.forgetPassword = async (req, reply) => {
                                     <td class="m_1006477609114479258content-cell"
                                         style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;padding:35px">
                                         <h1 style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;font-size:19px;font-weight:bold;margin-top:0;text-align:left">
-                                            Hello ${_Users.full_name}!</h1>
+                                            Hello ${_Admins.full_name}!</h1>
                                         <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">
                                             we received your request to reset password</p>
                                         <table class="m_1006477609114479258action" align="center" width="100%"
@@ -681,7 +693,7 @@ exports.resetPasswordUsers = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else if (pervUserEmail) {
@@ -690,7 +702,7 @@ exports.resetPasswordUsers = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'رقم الجوال موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else {
@@ -722,7 +734,7 @@ exports.resetEmailUsers = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'الايميل موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else if (pervUserEmail) {
@@ -731,7 +743,7 @@ exports.resetEmailUsers = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'الايميل موجود مسبقا',
-                items: rs
+                items: null
             }
             return response
         } else {

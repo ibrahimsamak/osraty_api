@@ -141,9 +141,9 @@ exports.getPaymentAdmin = async (req, reply) => {
 exports.deActivate = async (req, reply) => {
     try {
         const LastPayments = await payments.find({ $and: [{ user_id: req.body.user_id }, { isActive: true }] }).sort({ id: -1 })
-        .limit(1)
+            .limit(1)
         var id = ""
-        if (LastPayments.length > 0){
+        if (LastPayments.length > 0) {
             id = LastPayments[0]._id
         }
         const _payments = await payments.findByIdAndUpdate((id), {
@@ -172,13 +172,14 @@ exports.addRequest = async (req, reply) => {
         // 3: reject admin 
         // 4: stopped by user
         // 5: finish
-        let prevRequest = await requests.findOne({ user_id: req.body.user_id })
-        if (prevRequest.status == 1 || prevRequest.status == 2) {
+        let prevRequest = await requests.find({ user_id: req.body.user_id }).sort({ _id: -1 })
+        console.log(prevRequest[0])
+        if (prevRequest[0].status == 1 || prevRequest[0].status == 2) {
             const response = {
                 status_code: 400,
                 status: false,
                 message: 'عذرا .. لا يمكن الطلب الان يوجد لديكم طلب سابقا',
-                items: rs
+                items: null
             }
             return response
         } else {
@@ -355,6 +356,35 @@ exports.getRequestUser = async (req, reply) => {
         var page = parseInt(req.query.page, 10)
         var limit = parseInt(req.query.limit, 10)
 
+        const totalPayment = await payments.aggregate(
+            [
+                {
+                    "$match": {
+                        "to_user": req.params.id
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": "$ammount",
+                        "total": {
+                            $sum: "$ammount"
+                        }
+                    }
+                },
+                {
+                    "$unwind": {
+                        "path": "$type",
+                        "preserveNullAndEmptyArrays": true
+                    }
+                },
+
+            ],
+            function (err, results) {
+                console.log(results)
+            }
+        )
+
+
         const total = await requests.find({ user_id: req.params.id }).count();
         await requests.find({ user_id: req.params.id }).sort({ _id: -1 })
             .populate('user_id')
@@ -366,6 +396,7 @@ exports.getRequestUser = async (req, reply) => {
                     items: result,
                     status_code: 200,
                     message: 'returned successfully',
+                    total_payment: totalPayment,
                     pagenation: {
                         size: result.length,
                         totalElements: total,

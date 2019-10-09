@@ -31,7 +31,6 @@ const StaticPageSchema = mongoose.Schema({
 const ContactOptionSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true
   },
   message: {
     type: String

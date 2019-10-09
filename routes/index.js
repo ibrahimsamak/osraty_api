@@ -273,7 +273,6 @@ const routes = [
   {
     method: 'POST',
     url: '/api/user',
-    beforeHandler: [auth.getToken],
     handler: userController.addUser
   },
   {
@@ -336,7 +335,6 @@ const routes = [
   {
     method: 'POST',
     url: '/api/admin',
-    beforeHandler: [auth.getToken],
     handler: adminController.addAdmins
   },
   {
