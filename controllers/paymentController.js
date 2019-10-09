@@ -109,6 +109,14 @@ exports.getPaymentAdmin = async (req, reply) => {
     try {
         var page = parseInt(req.query.page, 10)
         var limit = parseInt(req.query.limit, 10)
+        var totalPayment = 0
+
+        await payments.find({ from_user: req.params.id }).sort({ _id: -1 })
+            .exec(function (err, result) {
+                result.forEach(element => {
+                    totalPayment += element.ammount
+                });
+            })
 
         const total = await payments.find({ from_user: req.params.id }).count();
         await payments.find({ from_user: req.params.id }).sort({ _id: -1 })
@@ -119,6 +127,7 @@ exports.getPaymentAdmin = async (req, reply) => {
             .exec(function (err, result) {
                 const response = {
                     items: result,
+                    total_payment: totalPayment,
                     status: true,
                     status_code: 200,
                     message: 'returned successfully',
@@ -149,6 +158,11 @@ exports.deActivate = async (req, reply) => {
         const _payments = await payments.findByIdAndUpdate((id), {
             isActive: false
         }, { new: true })
+
+        const _admin = await Admins.findByIdAndUpdate((id), {
+            isActivePayment: false
+        }, { new: true })
+
 
         const response = {
             status_code: 200,
@@ -355,35 +369,14 @@ exports.getRequestUser = async (req, reply) => {
 
         var page = parseInt(req.query.page, 10)
         var limit = parseInt(req.query.limit, 10)
+        var totalPayment = 0
 
-        const totalPayment = await payments.aggregate(
-            [
-                {
-                    "$match": {
-                        "to_user": req.params.id
-                    }
-                },
-                {
-                    "$group": {
-                        "_id": "$ammount",
-                        "total": {
-                            $sum: "$ammount"
-                        }
-                    }
-                },
-                {
-                    "$unwind": {
-                        "path": "$type",
-                        "preserveNullAndEmptyArrays": true
-                    }
-                },
-
-            ],
-            function (err, results) {
-                console.log(results)
-            }
-        )
-
+        await payments.find({ to_user: req.params.id }).sort({ _id: -1 })
+            .exec(function (err, result) {
+                result.forEach(element => {
+                    totalPayment += element.ammount
+                });
+            })
 
         const total = await requests.find({ user_id: req.params.id }).count();
         await requests.find({ user_id: req.params.id }).sort({ _id: -1 })

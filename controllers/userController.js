@@ -221,7 +221,8 @@ exports.addUser = async (req, reply) => {
                     paymentMethod_type: req.body.paymentMethod_type,
                     ammount: req.body.ammount,
                     paymentMethod_id: req.body.paymentMethod_id,
-                    type: req.body.type
+                    type: req.body.type,
+                    isActivePayment: true
                 }, { new: true })
                 const response = {
                     status_code: 200,

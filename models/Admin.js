@@ -22,17 +22,18 @@ const Adminschema = mongoose.Schema({
     },
     isActivate: {
         type: Boolean,
+    },  
+    isActivePayment: {
+        type: Boolean,
     },
     isBlock: {
         type: Boolean,
     },
     token: {
         type: String,
-        required: false
     },
     fcmToken: {
         type: String,
-        required: false
     },
     paymentMethod_type: {
         type: String
