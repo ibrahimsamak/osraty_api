@@ -129,8 +129,8 @@ exports.getSingleAdmins = async (req, reply) => {
 // Add a new Admins
 exports.addAdmins = async (req, reply) => {
     try {
-        let pervAdminEmail = await Admins.find({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
-        let pervUserEmail = await Users.find({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
+        const pervAdminEmail = await Admins.findOne({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
+        const pervUserEmail = await Users.findOne({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
         if (pervAdminEmail) {
             // emeail is exsits 
             const response = {
@@ -482,7 +482,7 @@ exports.resetPasswordAdmins = async (req, reply) => {
 exports.resetEmailAdmins = async (req, reply) => {
     try {
         const pervAdminEmail = await Admins.findOne({ email: req.body.email }).lean()
-        let pervUserEmail = await Users.findOne({ email: req.body.email }).lean()
+        const pervUserEmail = await Users.findOne({ email: req.body.email }).lean()
         console.log(pervUserEmail)
         console.log(pervAdminEmail)
         if (pervAdminEmail) {

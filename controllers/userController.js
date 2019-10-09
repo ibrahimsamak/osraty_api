@@ -138,8 +138,8 @@ exports.getSingleUser = async (req, reply) => {
 // Add a new User
 exports.addUser = async (req, reply) => {
     try {
-        let pervAdminEmail = await Admins.find({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
-        let pervUserEmail = await Users.find({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
+        const pervAdminEmail = await Admins.findOne({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
+        const pervUserEmail = await Users.findOne({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
         if (pervAdminEmail) {
             // emeail is exsits 
             const response = {
