@@ -77,13 +77,53 @@ const RequestApproveSchema = mongoose.Schema({
     }
 }, { versionKey: false });
 
+const BankSchema = mongoose.Schema({
+    bank_name: {
+        type: String
+    },
+    branch_ar: {
+        type: String
+    },
+    branch_en: {
+        type: String
+    },
+    name_ar: {
+        type: String
+    },
+    name_en: {
+        type: String
+    },
+    nationality_ar: {
+        type: String
+    },
+    nationality_en: {
+        type: String
+    },
+    id_no: {
+        type: String
+    },
+    account_no: {
+        type: String
+    },
+    iban: {
+        type: String
+    },
+    type: {
+        type: String
+    },
+    user_id: {
+        type: String
+    }
+
+}, { versionKey: false });
 
 RequestSchema.plugin(mongooseAggregatePaginate);
 const payment = mongoose.model('payments', PaymetSchema)
 const request = mongoose.model('requests', RequestSchema)
 const request_approve = mongoose.model('request_approve', RequestApproveSchema)
-
+const bankDetails = mongoose.model('bankdetails', BankSchema)
 
 exports.requests = request;
-exports.payments = payment; 
-exports.request_approve = request_approve; 
+exports.payments = payment;
+exports.request_approve = request_approve;
+exports.bankDetails = bankDetails; 

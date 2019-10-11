@@ -3,8 +3,8 @@ const boom = require('boom')
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 
-const { settings,getCurrentDateTime } = require('../models/Constant')
-const { payments, requests, request_approve } = require('../models/Payment')
+const { settings, getCurrentDateTime } = require('../models/Constant')
+const { payments, requests, request_approve, bankDetails } = require('../models/Payment')
 const { Users } = require('../models/User')
 const { Admins } = require('../models/Admin')
 const { Notifications } = require('../models/Notifications')
@@ -35,6 +35,9 @@ function CreateNotification(deviceId, msg, order_id, from_userName, to_user_id) 
                 "badge": 1
             },
             "data": {
+                "title": "متابعة طلب استفادة",
+                "body": msg,
+                "sound": "default",
                 "data": order_id,
             },
             "to": deviceId
@@ -55,6 +58,73 @@ function CreateNotification(deviceId, msg, order_id, from_userName, to_user_id) 
         xhr.send(data);
         resolve(data);
     });
+}
+
+
+// Get Bank Details
+exports.getBankDetails = async (req, reply) => {
+    try {
+        const _bankDetails = await bankDetails.findOne({ user_id: req.params.id })
+
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'تمت العملية بنجاح',
+            items: _bankDetails
+        }
+        return response
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+
+// add bank details
+exports.addBankDetails = async (req, reply) => {
+    try {
+        // status
+        // 1: Payment from user
+        // 2: verify payment from admin
+        const _PrevBankDetails = await bankDetails.findOne({ user_id: req.body.user_id })
+        if (_PrevBankDetails) {
+            console.log(req.body)
+            const _bankDetails = await Admins.findByIdAndUpdate((_PrevBankDetails._id), req.body, { new: true })
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'تمت العملية بنجاح',
+                items: _bankDetails
+            }
+            return response
+        } else {
+            let _bankDetails = new bankDetails(req.body);
+            let rs = await _bankDetails.save();
+
+            if (req.body.type == 'admin') {
+                const userData = await Admins.findByIdAndUpdate((req.body.user_id), {
+                    isActivePayment: false
+                }, { new: true })
+
+                CreateNotification(userData.fcmToken, 'تم التحقق من المعلومات البنكية بنجاح .. يمكنكم الان التسجيل في التطبيق', '', '', userData._id)
+            } else {
+                const userData = await Users.findByIdAndUpdate((req.body.user_id), {
+                    isActivePayment: false
+                }, { new: true })
+
+                CreateNotification(userData.fcmToken, 'تم التحقق من المعلومات البنكية بنجاح .. يمكنكم الان التسجيل في التطبيق', '', '', userData._id)
+            }
+
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'تمت العملية بنجاح',
+                items: rs
+            }
+            return response
+        }
+    } catch (err) {
+        throw boom.boomify(err)
+    }
 }
 
 //add payment
@@ -104,6 +174,10 @@ exports.addPaymentToUser = async (req, reply) => {
         });
 
         let rs = await _payments.save();
+
+        const userData = await Users.findById(req.body.to_user)
+        CreateNotification(userData.fcmToken, 'تم ايداع دفعة نقدية في حسابكم', '', '', userData._id)
+
         const response = {
             status_code: 200,
             status: true,

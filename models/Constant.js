@@ -12,7 +12,6 @@ const settingsSchema = mongoose.Schema({
   }
 }, { versionKey: false });
 
-
 const paymentMethodSchema = mongoose.Schema({
   name: {
     type: String,
@@ -58,6 +57,15 @@ const ContactOptionSchema = mongoose.Schema({
   }
 }, { versionKey: false });
 
+const FileSchema = mongoose.Schema({
+  file_name: {
+    type: String
+  },
+  file_url: {
+    type: String
+  }
+}, { versionKey: false });
+
 
 function getCurrentDateTime() {
   var utc = new Date();
@@ -73,6 +81,7 @@ const StaticPage = mongoose.model('StaticPage', StaticPageSchema);
 const ContactOption = mongoose.model('ContactOption', ContactOptionSchema);
 const Jobs = mongoose.model('Jobs', categorySchema);
 const Settings = mongoose.model('settings', settingsSchema);
+const bankfiles = mongoose.model('bankfiles', FileSchema);
 
 
 exports.paymentMethods = paymentMethod;
@@ -83,4 +92,5 @@ exports.StaticPage = StaticPage;
 exports.ContactOption = ContactOption;
 exports.jobs = Jobs;
 exports.settings = Settings;
+exports.bankfiles = bankfiles;
 exports.getCurrentDateTime = getCurrentDateTime;

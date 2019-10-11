@@ -1,9 +1,34 @@
 const boom = require('boom')
 const util = require('util');
+const cloudinary = require('cloudinary');
+const fs = require('fs');
 
 
 // Get Data Models
-const { getCurrentDateTime,jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption } = require('../models/Constant')
+const { bankfiles, getCurrentDateTime, jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption } = require('../models/Constant')
+
+
+cloudinary.config({
+    cloud_name: 'dztwo3qso',
+    api_key: '761391876145368',
+    api_secret: 'Sqfov5ua8c3514TJtzj27gpU9CY'
+});
+
+async function uploadImages(img) {
+    return new Promise(function (resolve, reject) {
+        cloudinary.v2.uploader.upload('./uploads/' + img,
+            function (error, result) {
+                if (error) {
+                    reject(error);
+                } else {
+                    console.log(result, error)
+                    img = result['url']
+                    resolve(img);
+                }
+            });
+    });
+
+}
 
 // cPanel
 exports.getAllConstants = async (req, reply) => {
@@ -16,8 +41,8 @@ exports.getAllConstants = async (req, reply) => {
             status: true,
             message: 'return succssfully',
             staticpages: staticpages,
-            paymentfor:paymentfor,
-            paymentMethod:paymentMethod
+            paymentfor: paymentfor,
+            paymentMethod: paymentMethod
         }
         return response
 
@@ -460,7 +485,6 @@ exports.deleteStatic = async (req, reply) => {
 }
 
 
-
 exports.getContact = async (req, reply) => {
     try {
         var page = parseInt(req.query.page, 10)
@@ -518,7 +542,6 @@ exports.contactSearch = async (req, reply) => {
 }
 
 
-
 exports.addContact = async (req, reply) => {
     try {
         let ContactOptions = new ContactOption({
@@ -553,6 +576,138 @@ exports.deleteContact = async (req, reply) => {
             items: []
         }
         return response
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+
+exports.getFiles = async (req, reply) => {
+    try {
+        const _bankfiles = await bankfiles.find();
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: _bankfiles
+        }
+        return response
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.getSingleFiles = async (req, reply) => {
+    try {
+        const _bankfiles = await bankfiles.findById(req.params.id);
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: _bankfiles
+        }
+        return response
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.addFile = async (req, reply) => {
+    try {
+        if (req.raw.files) {
+            const files = req.raw.files
+            let fileArr = []
+            for (let key in files) {
+                fileArr.push({
+                    name: files[key].name,
+                    mimetype: files[key].mimetype
+                })
+            }
+            var data = new Buffer(files.filename.data);
+            fs.writeFile('./uploads/' + files.filename.name, data, 'binary', function (err) {
+                if (err) {
+                    console.log("There was an error writing the image")
+                }
+                else {
+                    console.log("The sheel file was written")
+                }
+            });
+
+            let img = '';
+            await uploadImages(files.filename.name).then((x) => {
+                img = x;
+            });
+            console.log(img)
+
+            let Advs = new bankfiles({
+                file_name: req.raw.body.title,
+                file_url: img
+            });
+            let rs = await Advs.save();
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'return succssfully',
+                items: rs
+            }
+            reply.send(response);
+        }
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.updateFile = async (req, reply) => {
+    try {
+        if (req.raw.files) {
+            const files = req.raw.files
+            let fileArr = []
+            for (let key in files) {
+                fileArr.push({
+                    name: files[key].name,
+                    mimetype: files[key].mimetype
+                })
+            }
+            var data = new Buffer(files.filename.data);
+            fs.writeFile('./uploads/' + files.filename.name, data, 'binary', function (err) {
+                if (err) {
+                    console.log("There was an error writing the image")
+                }
+                else {
+                    console.log("The sheel file was written")
+                }
+            });
+
+            let img = '';
+            await uploadImages(files.filename.name).then((x) => {
+                img = x;
+            });
+
+            const _bankfiles = await bankfiles.findByIdAndUpdate((req.params.id), {
+                file_name: req.raw.body.title,
+                file_url: img
+            }, { new: true })
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'return succssfully',
+                items: _bankfiles
+            }
+            return response
+
+        } else {
+            const _bankfiles = await bankfiles.findByIdAndUpdate((req.params.id), {
+                file_name: req.raw.body.title
+            }, { new: true })
+
+            const response = {
+                status_code: 200,
+                status: true,
+                message: 'return succssfully',
+                items: _bankfiles
+            }
+            return response
+        }
     } catch (err) {
         throw boom.boomify(err)
     }

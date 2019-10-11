@@ -62,6 +62,27 @@ const routes = [
 
   {
     method: 'GET',
+    url: '/api/BankFile',
+    handler: constantController.getFiles
+  },
+  {
+    method: 'GET',
+    url: '/api/BankFile/:id',
+    handler: constantController.getSingleFiles
+  },
+  {
+    method: 'POST',
+    url: '/api/BankFile',
+    handler: constantController.addFile
+  },
+  {
+    method: 'POST',
+    url: '/api/BankFile/:id',
+    handler: constantController.updateFile
+  },
+
+  {
+    method: 'GET',
     url: '/api/paymentmethod',
     handler: constantController.getpaymentMethods
   },
@@ -393,6 +414,16 @@ const routes = [
   },
 
 
+  {
+    method: 'GET',
+    url: '/api/BankDetails/:id',
+    handler: paymentController.getBankDetails
+  },
+  {
+    method: 'POST',
+    url: '/api/BankDetails',
+    handler: paymentController.addBankDetails
+  },
   {
     method: 'POST',
     url: '/api/Payment',

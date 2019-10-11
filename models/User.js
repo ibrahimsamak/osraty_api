@@ -70,6 +70,9 @@ const UserSchema = mongoose.Schema({
     isActivate: {
         type: Boolean
     },
+    isActivePayment:{
+        type: Boolean
+    },
     fcmToken: {
         type: String,
         required: false
