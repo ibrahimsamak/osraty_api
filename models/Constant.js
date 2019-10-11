@@ -4,8 +4,11 @@ const mongoose = require('mongoose');
 
 
 const settingsSchema = mongoose.Schema({
-  persons: {
-    type: Number,
+  key: {
+    type: String,
+  },
+  value:{
+    type:String
   }
 }, { versionKey: false });
 
@@ -56,6 +59,12 @@ const ContactOptionSchema = mongoose.Schema({
 }, { versionKey: false });
 
 
+function getCurrentDateTime() {
+  var utc = new Date();
+  var current = utc.setHours(utc.getHours() + 3);
+  return current
+}
+
 const paymentMethod = mongoose.model('paymentMethod', paymentMethodSchema);
 const category = mongoose.model('category', categorySchema);
 const paymentFor = mongoose.model('paymentFor', categorySchema);
@@ -74,4 +83,4 @@ exports.StaticPage = StaticPage;
 exports.ContactOption = ContactOption;
 exports.jobs = Jobs;
 exports.settings = Settings;
-
+exports.getCurrentDateTime = getCurrentDateTime;

@@ -5,6 +5,7 @@ const async = require('async')
 
 const { News } = require('../models/news')
 const { NewsAttend } = require('../models/newsAttend')
+const { getCurrentDateTime } = require('../models/Constant')
 
 const cloudinary = require('cloudinary');
 
@@ -155,7 +156,7 @@ exports.addNews = async (req, reply) => {
                 title: req.raw.body.title,
                 details: req.raw.body.details,
                 image: img,
-                createAt: Date(),
+                createAt: getCurrentDateTime(),
                 type: req.raw.body.type,
                 place: req.raw.body.place
             });
@@ -208,7 +209,7 @@ exports.updateNews = async (req, reply) => {
                 title: req.raw.body.title,
                 details: req.raw.body.details,
                 image: img,
-                createAt: Date(),
+                createAt: getCurrentDateTime(),
                 type: req.raw.body.type,
                 place: req.raw.body.place
             }, { new: true })
@@ -226,7 +227,7 @@ exports.updateNews = async (req, reply) => {
             const Advs = await News.findByIdAndUpdate((req.params.id), {
                 title: req.raw.body.title,
                 details: req.raw.body.details,
-                createAt: Date(),
+                createAt: getCurrentDateTime(),
                 type: req.raw.body.type,
                 place: req.raw.body.place
             }, { new: true })
@@ -281,7 +282,7 @@ exports.updateGoing = async (req, reply) => {
             let _Newss = new NewsAttend({
                 user_id: req.body.user_id,
                 news_id: req.body.news_id,
-                createAt: Date(),
+                createAt: getCurrentDateTime(),
                 isGoing: req.body.isGoing
             });
 

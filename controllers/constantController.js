@@ -3,7 +3,7 @@ const util = require('util');
 
 
 // Get Data Models
-const { jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption } = require('../models/Constant')
+const { getCurrentDateTime,jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption } = require('../models/Constant')
 
 // cPanel
 exports.getAllConstants = async (req, reply) => {
@@ -526,7 +526,7 @@ exports.addContact = async (req, reply) => {
             title: req.body.title,
             message: req.body.message,
             email: req.body.email,
-            createAt: Date()
+            createAt: getCurrentDateTime()
         });
 
 

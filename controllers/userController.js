@@ -10,10 +10,11 @@ const cloudinary = require('cloudinary');
 const multer = require('multer');
 var moment = require('moment-timezone');
 var nodemailer = require('nodemailer');
+
 const { Users } = require('../models/User')
 const { Admins } = require('../models/Admin')
 const { encryptPassword } = require('../utils/utils')
-
+const { getCurrentDateTime } = require('../models/Constant')
 
 var transporter = nodemailer.createTransport({
     host: 'webhosting2035.is.cc',
@@ -179,7 +180,7 @@ exports.addUser = async (req, reply) => {
                     social_status: req.body.social_status,
                     has_children: req.body.has_children,
                     children_no: req.body.children_no,
-                    createAt: Date(),
+                    createAt: getCurrentDateTime(),
                     isBlock: false,
                     isWork: req.body.isWork,
                     work_type: req.body.work_type,
@@ -217,7 +218,7 @@ exports.addUser = async (req, reply) => {
 
                 let rs = await _Admins.save();
                 await Admins.findByIdAndUpdate((rs._id), {
-                    createAt: Date(),
+                    createAt: getCurrentDateTime(),
                     paymentMethod_type: req.body.paymentMethod_type,
                     ammount: req.body.ammount,
                     paymentMethod_id: req.body.paymentMethod_id,
@@ -279,7 +280,7 @@ exports.updateUser = async (req, reply) => {
             social_status: req.body.social_status,
             has_children: req.body.has_children,
             children_no: req.body.children_no,
-            createAt: Date(),
+            createAt: getCurrentDateTime(),
             isBlock: false,
             isWork: req.body.isWork,
             work_type: req.body.work_type,
@@ -315,6 +316,7 @@ exports.loginUser = async (req, reply) => {
         const _Users = await Users.findOne({ $and: [{ email: req.body.email }, { password: pass }] })
         const _Admin = await Admins.findOne({ $and: [{ email: req.body.email }, { password: pass }] })
 
+        console.log(_Users)
         if (_Users) {
             await Users.findByIdAndUpdate((_Users._id), {
                 fcmToken: req.body.fcmToken,
@@ -346,7 +348,7 @@ exports.loginUser = async (req, reply) => {
                 status_code: 400,
                 status: false,
                 message: 'خطأ في معلومات الدخول',
-                items: _Admins
+                items: null
             }
             return response
         }
@@ -360,8 +362,8 @@ exports.forgetPassword = async (req, reply) => {
     try {
         const _Users = await Users.findOne({ $and: [{ email: req.body.email }, { phone_number: req.body.phone_number }] })
         const _Admins = await Admins.findOne({ $and: [{ email: req.body.email }, { phone_number: req.body.phone_number }] })
-        var newPassword = makeid();
-
+        const _newPassword = makeid();
+        const newPassword = encryptPassword(_newPassword)
         if (_Users) {
             console.log(_Users)
             const update = await Users.findByIdAndUpdate(_Users._id, { password: newPassword }, { new: true })

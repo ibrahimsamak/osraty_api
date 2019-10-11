@@ -1,9 +1,61 @@
 const moment = require('moment')
 const boom = require('boom')
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
+
+const { settings,getCurrentDateTime } = require('../models/Constant')
 const { payments, requests, request_approve } = require('../models/Payment')
 const { Users } = require('../models/User')
 const { Admins } = require('../models/Admin')
+const { Notifications } = require('../models/Notifications')
 
+
+function CreateNotification(deviceId, msg, order_id, from_userName, to_user_id) {
+    return new Promise(function (resolve, reject) {
+
+        let _Notification = new Notifications({
+            from: 'الادراة',
+            user_id: to_user_id,
+            title: 'متابعة طلب استفادة',
+            msg: msg,
+            dt_date: getCurrentDateTime(),
+            type: 1,
+            body_parms: '',
+            isRead: false
+        });
+
+        let rs = _Notification.save();
+        console.log(rs);
+        let postModel =
+        {
+            "notification": {
+                "title": "متابعة طلب استفادة",
+                "body": msg,
+                "sound": "default",
+                "badge": 1
+            },
+            "data": {
+                "data": order_id,
+            },
+            "to": deviceId
+        };
+        var data = JSON.stringify(postModel);
+        var xhr = new XMLHttpRequest();
+        //xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                console.log('send' + this.responseText);
+            }
+        });
+
+        xhr.open("POST", "https://fcm.googleapis.com/fcm/send");
+        xhr.setRequestHeader("Authorization", 'key=AAAAqt1KWqo:APA91bGORnlJSjsolVNsBTp8WWUE9w8R_yAX77KJNThmwSBum6fDKAwTTzJChayvU1yNzxOK806Z1lGG05m_pUmrQoirSfcpaZV8lv5Gx_-NAW_XZaOeQpcgNUOfTBPzmeyDmtNUbA3k');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(data);
+        resolve(data);
+    });
+}
 
 //add payment
 exports.addPayment = async (req, reply) => {
@@ -19,7 +71,7 @@ exports.addPayment = async (req, reply) => {
             isActive: true,
             status: 1,
             flag: 1,
-            createAt: Date()
+            createAt: getCurrentDateTime()
         });
 
         let rs = await _payments.save();
@@ -48,7 +100,7 @@ exports.addPaymentToUser = async (req, reply) => {
             isActive: true,
             status: 1,
             flag: -1,
-            createAt: Date()
+            createAt: getCurrentDateTime()
         });
 
         let rs = await _payments.save();
@@ -233,7 +285,7 @@ exports.addRequest = async (req, reply) => {
                 let _requests = new requests({
                     user_id: req.body.user_id,
                     status: 1,
-                    createAt: Date(),
+                    createAt: getCurrentDateTime(),
                     ammount: req.body.ammount,
                     notes: req.body.notes,
                     // startDate: req.body.startDate,
@@ -254,7 +306,7 @@ exports.addRequest = async (req, reply) => {
             let _requests = new requests({
                 user_id: req.body.user_id,
                 status: 1,
-                createAt: Date(),
+                createAt: getCurrentDateTime(),
                 ammount: req.body.ammount,
                 notes: req.body.notes,
                 // startDate: req.body.startDate,
@@ -328,51 +380,82 @@ exports.updateRequestByAdmin = async (req, reply) => {
         // 5: finish
 
         var approve = false
-        const prevApprove = await request_approve.findOne({ $and: [{ superAdmin_id: req.body.superAdmin_id }, { request_id: req.body.request_id }] })
-        if (prevApprove) {
+
+        const _settings = await settings.findOne({ key: 'persons' })
+        const approveCount = await request_approve.find({ $and: [{ request_id: req.body.id }] }).count()
+        const persons = _settings.value
+
+        if (approveCount <= persons) {
+            const prevApprove = await request_approve.findOne({ $and: [{ superAdmin_id: req.body.superAdmin_id }, { request_id: req.body.id }] })
+            if (prevApprove) {
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'تم الاعتماد مسبقا',
+                    items: null
+                }
+                return response
+            } else {
+
+                if (req.body.status == 2) {
+                    approve = true
+                    let _request_approve = new request_approve({
+                        superAdmin_id: req.body.superAdmin_id,
+                        request_id: req.body.id,
+                        approve: approve
+                    });
+                    await _request_approve.save();
+                } else if (req.body.status == 3) {
+                    approve = false
+                    let _request_approve = new request_approve({
+                        superAdmin_id: req.body.superAdmin_id,
+                        request_id: req.body.id,
+                        approve: approve
+                    });
+                    await _request_approve.save();
+                }
+
+                const approveCount = await request_approve.find({ $and: [{ request_id: req.body.id }, { approve: true }] }).count()
+                const notapproveCount = await request_approve.find({ $and: [{ request_id: req.body.id }, { approve: false }] }).count()
+
+                const _requests = await requests.findByIdAndUpdate((req.body.id), {
+                    ammount: req.body.ammount,
+                    status: req.body.status,
+                    startDate: req.body.startDate,
+                    endDate: req.body.endDate,
+                    notes: ''
+                }, { new: true })
+
+                if (approveCount == persons) {
+                    //اخر واحد ببعت تنبيه
+                    if (approveCount > notapproveCount) {
+                        // تنبيه قبول
+                        const userData = await Users.findById(_requests.user_id)
+                        CreateNotification(userData.fcmToken, 'تم قبول طلبكم وسيتم موعد تحديد ايداع الدفعات في وقت لاحق', '', '', _requests.user_id)
+                    } else {
+                        // تنبيه رفض
+                        const userData = await Users.findById(_requests.user_id)
+                        CreateNotification(userData.fcmToken, 'عذرا .. لقد تم رفض طلبكم', '', '', _requests.user_id)
+                    }
+                }
+
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'تمت العميلة بنجاح',
+                    items: _requests
+                }
+                return response
+            }
+        } else {
             const response = {
-                status_code: 200,
-                status: true,
-                message: 'تم الاعتماد مسبقا',
+                status_code: 400,
+                status: false,
+                message: 'تجاوزت الحد المسموح به للاعتماد',
                 items: null
             }
             return response
-        } else {
-            if (req.body.status == 2) {
-                approve = true
-                let _request_approve = new request_approve({
-                    superAdmin_id: req.body.superAdmin_id,
-                    request_id: req.body.request_id,
-                    approve: approve
-                });
-                await _request_approve.save();
-            } else if (req.body.status == 3) {
-                approve = false
-                let _request_approve = new request_approve({
-                    superAdmin_id: req.body.superAdmin_id,
-                    request_id: req.body.rrequest_id,
-                    approve: approve
-                });
-                await _request_approve.save();
-            }
-
-            const _requests = await requests.findByIdAndUpdate((req.body.id), {
-                ammount: req.body.ammount,
-                status: req.body.status,
-                startDate: req.body.startDate,
-                endDate: req.body.endDate,
-                notes: ''
-            }, { new: true })
-
-            const response = {
-                status_code: 200,
-                status: true,
-                message: 'تمت العميلة بنجاح',
-                items: _requests
-            }
-            return response
         }
-
     } catch (err) {
         throw boom.boomify(err)
     }

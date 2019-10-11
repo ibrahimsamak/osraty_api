@@ -10,6 +10,8 @@ const cron = require('node-cron');
 const { Admins } = require('../models/Admin')
 const { Users } = require('../models/User')
 const { encryptPassword } = require('../utils/utils')
+const { getCurrentDateTime } = require('../models/Constant')
+
 
 // cron.schedule('* * * * *', () => {
 //   console.log('running a task every minute');
@@ -213,7 +215,7 @@ exports.activateAdmins = async (req, reply) => {
 exports.updateAdmins = async (req, reply) => {
     try {
         const _Admins = await Admins.findByIdAndUpdate((req.params.id), {
-            createAt: Date(),
+            createAt: getCurrentDateTime(),
             paymentMethod_type: req.body.paymentMethod_type,
             ammount: req.body.ammount,
             paymentMethod_id: req.body.paymentMethod_id,
