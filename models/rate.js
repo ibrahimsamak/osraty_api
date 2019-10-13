@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 //المشرفين
 const Rateschema = mongoose.Schema({
     user_id: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Users'
+        type: mongoose.Schema.Types.ObjectId, ref: 'users'
     },
     customer_deal: {
         type: Number

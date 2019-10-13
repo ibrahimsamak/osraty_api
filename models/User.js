@@ -82,11 +82,11 @@ const UserSchema = mongoose.Schema({
         required: false
     },
     payment_for: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'paymentFor'
+        type: mongoose.Schema.Types.ObjectId, ref: 'paymentfors'
     }
 }, { versionKey: false });
 
-const Users = mongoose.model('Users', UserSchema);
+const Users = mongoose.model('users', UserSchema);
 
 
 exports.Users = Users;

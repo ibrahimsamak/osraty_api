@@ -29,10 +29,10 @@ const PaymetSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'users'
     },
     methodType: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'paymentMethod'
+        type: mongoose.Schema.Types.ObjectId, ref: 'paymentmethods'
     },
     methodFor: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'paymentFor'
+        type: mongoose.Schema.Types.ObjectId, ref: 'paymentfors'
     }
 }, { versionKey: false });
 
@@ -40,7 +40,7 @@ const PaymetSchema = mongoose.Schema({
 // الطلبات
 const RequestSchema = mongoose.Schema({
     user_id: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Users'
+        type: mongoose.Schema.Types.ObjectId, ref: 'users'
     },
     status: {
         type: Number
@@ -61,7 +61,7 @@ const RequestSchema = mongoose.Schema({
         type: String
     },
     type: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'paymentFor'
+        type: mongoose.Schema.Types.ObjectId, ref: 'paymentfors'
     }
 }, { versionKey: false });
 

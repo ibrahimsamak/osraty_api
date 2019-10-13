@@ -640,7 +640,7 @@ exports.addFile = async (req, reply) => {
             console.log(img)
 
             let Advs = new bankfiles({
-                file_name: req.raw.body.title,
+                file_details: req.raw.body.title,
                 file_url: img
             });
             let rs = await Advs.save();
@@ -684,7 +684,7 @@ exports.updateFile = async (req, reply) => {
             });
 
             const _bankfiles = await bankfiles.findByIdAndUpdate((req.params.id), {
-                file_name: req.raw.body.title,
+                file_details: req.raw.body.title,
                 file_url: img
             }, { new: true })
             const response = {
@@ -697,7 +697,7 @@ exports.updateFile = async (req, reply) => {
 
         } else {
             const _bankfiles = await bankfiles.findByIdAndUpdate((req.params.id), {
-                file_name: req.raw.body.title
+                file_details: req.raw.body.title
             }, { new: true })
 
             const response = {

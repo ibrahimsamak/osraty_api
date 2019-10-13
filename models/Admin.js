@@ -48,7 +48,7 @@ const Adminschema = mongoose.Schema({
         type: Date
     },
     paymentMethod_id: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'paymentMethod'
+        type: mongoose.Schema.Types.ObjectId, ref: 'paymentmethods'
     }
 }, { versionKey: false });
 

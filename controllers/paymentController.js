@@ -1,13 +1,14 @@
 const moment = require('moment')
 const boom = require('boom')
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const _ = require('underscore');
+const lodash = require('lodash');
 
-
-const { settings, getCurrentDateTime } = require('../models/Constant')
 const { payments, requests, request_approve, bankDetails } = require('../models/Payment')
 const { Users } = require('../models/User')
 const { Admins } = require('../models/Admin')
 const { Notifications } = require('../models/Notifications')
+const { bankfiles, getCurrentDateTime, jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption } = require('../models/Constant')
 
 
 function CreateNotification(deviceId, msg, order_id, from_userName, to_user_id) {
@@ -102,13 +103,13 @@ exports.addBankDetails = async (req, reply) => {
 
             if (req.body.type == 'admin') {
                 const userData = await Admins.findByIdAndUpdate((req.body.user_id), {
-                    isActivePayment: false
+                    isActivePayment: true
                 }, { new: true })
 
                 CreateNotification(userData.fcmToken, 'تم التحقق من المعلومات البنكية بنجاح .. يمكنكم الان التسجيل في التطبيق', '', '', userData._id)
             } else {
                 const userData = await Users.findByIdAndUpdate((req.body.user_id), {
-                    isActivePayment: false
+                    isActivePayment: true
                 }, { new: true })
 
                 CreateNotification(userData.fcmToken, 'تم التحقق من المعلومات البنكية بنجاح .. يمكنكم الان التسجيل في التطبيق', '', '', userData._id)
@@ -289,7 +290,6 @@ exports.deActivate = async (req, reply) => {
             isActivePayment: false
         }, { new: true })
 
-
         const response = {
             status_code: 200,
             status: true,
@@ -333,7 +333,6 @@ exports.getlast20PaymentForUser = async (req, reply) => {
         throw boom.boomify(err)
     }
 }
-
 
 //add request
 exports.addRequest = async (req, reply) => {
@@ -534,7 +533,6 @@ exports.updateRequestByAdmin = async (req, reply) => {
         throw boom.boomify(err)
     }
 }
-
 
 // get request for super admins
 exports.getRequestAllForAdmin = async (req, reply) => {
@@ -737,6 +735,496 @@ exports.getActiveRequestUser = async (req, reply) => {
                 reply.send(response)
             })
 
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// reports for history
+exports.rpt_history = async (req, reply) => {
+    try {
+        console.log(req.body)
+
+        var query = {}
+        var sum = 0
+        if (req.body.dt_start && req.body.dt_end) {
+            query = { $and: [{ createAt: { $lte: new Date(req.body.dt_end) } }, { createAt: { $gte: new Date(req.body.dt_start) } }] }
+        }
+        if (req.body.type == 'user') {
+            query['to_user'] = req.body.user_id
+            query['flag'] = -1
+            if (req.body.methodFor) {
+                query['methodFor'] = req.body.methodFor
+            }
+        } else {
+            query['from_user'] = req.body.user_id
+            query['flag'] = 1
+            if (req.body.methodType) {
+                query['methodType'] = req.body.methodType
+            }
+        }
+
+        var page = parseInt(req.query.page, 10)
+        var limit = parseInt(req.query.limit, 10)
+        const total = await payments.find(query).count();
+
+        await payments.find(query).sort({ _id: -1 })
+            .populate('methodFor')
+            .populate('methodType')
+            .skip((page) * limit)
+            .limit(limit)
+            .exec(function (err, item) {
+                item.forEach(element => {
+                    sum += element.ammount
+                });
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'return succssfully',
+                    items: item,
+                    total: sum,
+                    pagenation: {
+                        size: item.length,
+                        totalElements: total,
+                        totalPages: Math.floor(total / limit),
+                        pageNumber: page
+                    }
+                }
+                reply.send(response)
+            });
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// reports for funder
+exports.rpt_funder = async (req, reply) => {
+    try {
+        var query = {}
+
+        if (req.body.dt_start && req.body.dt_end) {
+            query = { $and: [{ createAt: { $lte: new Date(req.body.dt_end) } }, { createAt: { $gte: new Date(req.body.dt_start) } }] }
+        }
+        if (req.body.methodType) {
+            query['methodType'] = req.body.methodType
+        }
+        if (req.body.status) {
+            if (req.body.status == 'true') {
+                query['isActive'] = true
+            } else if (req.body.status == 'false') {
+                query['isActive'] = false
+            }
+        }
+        query['flag'] = 1
+
+        console.log('qqq' + query.isActive)
+        var page = parseInt(req.query.page, 10)
+        var limit = parseInt(req.query.limit, 10)
+        var sum = 0
+        const total = await payments.find(query).count();
+
+        await payments.find(query).sort({ _id: -1 })
+            .populate('from_user')
+            .populate('methodType')
+            .skip((page) * limit)
+            .limit(limit)
+            .exec(function (err, item) {
+                item.forEach(element => {
+                    sum += element.ammount
+                });
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'return succssfully',
+                    items: item,
+                    total: sum,
+                    pagenation: {
+                        size: item.length,
+                        totalElements: total,
+                        totalPages: Math.floor(total / limit),
+                        pageNumber: page
+                    }
+                }
+                reply.send(response)
+            });
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// reports for beneficiary
+exports.rpt_beneficiary = async (req, reply) => {
+    try {
+        var query = {}
+        var sum = 0
+
+        if (req.body.dt_start && req.body.dt_end) {
+            query = { $and: [{ createAt: { $lte: new Date(req.body.dt_end) } }, { createAt: { $gte: new Date(req.body.dt_start) } }] }
+        }
+        if (req.body.methodFor) {
+            query['methodFor'] = req.body.methodFor
+        }
+        query['flag'] = -1
+        // query['to_user'] = { $exists: true }
+        // query['methodFor'] = { $exists: true }
+
+        var page = parseInt(req.query.page, 10)
+        var limit = parseInt(req.query.limit, 10)
+
+        const total = await payments.find(query).count();
+        await payments.find(query).sort({ _id: -1 })
+            .populate('to_user')
+            .populate('methodFor')
+            .skip((page) * limit)
+            .limit(limit)
+            .exec(function (err, item) {
+                item.forEach(element => {
+                    sum += element.ammount
+                });
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'return succssfully',
+                    items: item,
+                    total: sum,
+                    pagenation: {
+                        size: item.length,
+                        totalElements: total,
+                        totalPages: Math.floor(total / limit),
+                        pageNumber: page
+                    }
+                }
+                reply.send(response)
+            });
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// report request
+exports.rpt_request = async (req, reply) => {
+    try {
+
+        var query = {}
+
+        if (req.body.dt_start && req.body.dt_end) {
+            query = { $and: [{ createAt: { $lte: new Date(req.body.dt_end) } }, { createAt: { $gte: new Date(req.body.dt_start) } }] }
+        }
+        if (req.body.status) {
+            query['status'] = req.body.status
+        }
+        if (req.body.user_id) {
+            query['user_id'] = req.body.user_id
+        }
+        if (req.body.type) {
+            query['type'] = req.body.type
+        }
+        var page = parseInt(req.query.page, 10)
+        var limit = parseInt(req.query.limit, 10)
+        const total = await requests.find(query).count();
+        await requests.find(query).sort({ _id: -1 })
+            .populate('user_id')
+            .populate('type')
+            .sort({ _id: -1 })
+            .skip((page) * limit)
+            .limit(limit)
+            .exec(function (err, result) {
+                const response = {
+                    items: result,
+                    status_code: 200,
+                    message: 'returned successfully',
+                    pagenation: {
+                        size: result.length,
+                        totalElements: total,
+                        totalPages: Math.floor(total / limit),
+                        pageNumber: page
+                    }
+                }
+                reply.send(response)
+            });
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// satistics
+exports.getMethodFor = async (req, reply) => {
+    try {
+        var company_arr = []
+        var orderedResult = []
+
+        //نوكيا
+        var _doneOrders = await userOrders.find({ $and: [{ network_id: '5d639bb5a777633ff6c75eba' }, { company_id: '5d639ba3a777633ff6c75eb7' }] })
+        var notAttachedImage = lodash.sumBy(_doneOrders, function (o) { return o.notAttachedImage; })
+        var imageNotComplete = lodash.sumBy(_doneOrders, function (o) { return o.imageNotComplete; })
+        var problems = lodash.sumBy(_doneOrders, function (o) { return o.problems; })
+        var total1 = notAttachedImage + imageNotComplete + problems
+
+        var _doneOrders2 = await userOrders.find({ $and: [{ network_id: '5d639bb0a777633ff6c75eb9' }, { company_id: '5d639ba3a777633ff6c75eb7' }] })
+        var notAttachedImage2 = lodash.sumBy(_doneOrders2, function (o) { return o.notAttachedImage; })
+        var imageNotComplete2 = lodash.sumBy(_doneOrders2, function (o) { return o.imageNotComplete; })
+        var problems2 = lodash.sumBy(_doneOrders2, function (o) { return o.problems; })
+        var total2 = notAttachedImage2 + imageNotComplete2 + problems2
+
+        //قنوات الشبكة
+        var _doneOrders3 = await userOrders.find({ $and: [{ network_id: '5d639bb5a777633ff6c75eba' }, { company_id: '5d64eae1cd3c9c0024e6fb7f' }] })
+        var notAttachedImage3 = lodash.sumBy(_doneOrders3, function (o) { return o.notAttachedImage; })
+        var imageNotComplete3 = lodash.sumBy(_doneOrders3, function (o) { return o.imageNotComplete; })
+        var problems3 = lodash.sumBy(_doneOrders3, function (o) { return o.problems; })
+        var total3 = notAttachedImage3 + imageNotComplete3 + problems3
+
+        var _doneOrders4 = await userOrders.find({ $and: [{ network_id: '5d639bb0a777633ff6c75eb9' }, { company_id: '5d64eae1cd3c9c0024e6fb7f' }] })
+        var notAttachedImage4 = lodash.sumBy(_doneOrders4, function (o) { return o.notAttachedImage; })
+        var imageNotComplete4 = lodash.sumBy(_doneOrders4, function (o) { return o.imageNotComplete; })
+        var problems4 = lodash.sumBy(_doneOrders4, function (o) { return o.problems; })
+        var total4 = imageNotComplete4 + notAttachedImage4 + problems4
+
+
+        orderedResult.push(
+            {
+                name: 'نوكيا - فايبر',
+                value: total1
+            },
+            {
+                name: 'نوكيا - نحاس',
+                value: total2
+            },
+            {
+                name: 'قنوات الشبكة - فايبر',
+                value: total3
+            },
+            {
+                name: 'قنوات الشبكة - نحاس',
+                value: total4
+            }
+        )
+
+        // company_arr.push({ name: result.full_name, series: orderedResult })
+        reply.send(orderedResult)
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.getMotstMethodFor = async (req, reply) => {
+    try {
+        var products = []
+        await payments.find({ methodFor: { $exists: true } }, { status: 2 })
+            .populate('methodFor')
+            .exec(function (err, item) {
+                item.forEach(element => {
+                    products.push(element.methodFor)
+                });
+
+                var _result = lodash(products)
+                    .groupBy('name')
+                    .map(function (items, _name) {
+                        return { name: _name, value: items.length }
+                    }).value()
+
+                var orderedResult = lodash.orderBy(_result, ['count'], ['desc']);
+                var FinalResult = lodash.take(orderedResult, 10)
+
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'return succssfully',
+                    items: FinalResult,
+                }
+                reply.send(response)
+            });
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.getMotstMethodType = async (req, reply) => {
+    try {
+        var products = []
+        await payments.find({ methodType: { $exists: true } }, { status: 2 })
+            .populate('methodType')
+            .exec(function (err, item) {
+                item.forEach(element => {
+                    products.push(element.methodType)
+                });
+
+                var _result = lodash(products)
+                    .groupBy('name')
+                    .map(function (items, _name) {
+                        return { name: _name, value: items.length }
+                    }).value()
+
+                var orderedResult = lodash.orderBy(_result, ['count'], ['desc']);
+                var FinalResult = lodash.take(orderedResult, 10)
+
+                const response = {
+                    status_code: 200,
+                    status: true,
+                    message: 'return succssfully',
+                    items: FinalResult,
+                }
+                reply.send(response)
+            });
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// تسجيل المستفيدين
+exports.getUsersPerYear = async (req, reply) => {
+    try {
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        var items = []
+
+        await Users.find().sort({ createAt: 1 })
+            .exec(function (err, result) {
+                result.forEach(element => {
+                    var month_number = new Date(element.createAt).getMonth();
+                    var month_name = monthNames[month_number];
+                    items.push({ month: month_name, user: element._id })
+                });
+
+                var _result = lodash(items)
+                    .groupBy('month')
+                    .map(function (items, _name) {
+                        return { name: _name, value: items.length }
+                    }).value()
+
+                var orderedResult = lodash.orderBy(_result, ['count'], ['desc']);
+
+                const response = {
+                    name: 'مستخدم جديد',
+                    series: orderedResult
+                }
+                reply.send(response)
+            });
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+// تسجيل المتبرعين
+exports.getAdminsPerYear = async (req, reply) => {
+    try {
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        var items = []
+
+        await Admins.find().sort({ createAt: 1 })
+            .exec(function (err, result) {
+                result.forEach(element => {
+                    var month_number = new Date(element.createAt).getMonth();
+                    var month_name = monthNames[month_number];
+                    items.push({ month: month_name, user: element._id })
+                });
+
+                var _result = lodash(items)
+                    .groupBy('month')
+                    .map(function (items, _name) {
+                        return { name: _name, value: items.length }
+                    }).value()
+
+                var orderedResult = lodash.orderBy(_result, ['count'], ['desc']);
+
+                const response = {
+                    name: 'مستخدم جديد',
+                    series: orderedResult
+                }
+                reply.send(response)
+            });
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+//الوارد
+exports.PaymentPerYear = async (req, reply) => {
+    try {
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        var items = []
+        await payments.find()
+            .exec(function (err, result) {
+                result.forEach(element => {
+                    var month_number = new Date(element.createAt).getMonth();
+                    var month_name = monthNames[month_number];
+                    if (element.flag == 1) {
+                        items.push({ month: month_name, Total: element.ammount, flag: element.flag })
+                    }
+                });
+
+                var _result = lodash(items)
+                    .groupBy('month')
+                    .map(function (items, _name) {
+                        return { name: _name, value: lodash.sumBy(items, function (o) { return o.Total; }) }
+                    }).value()
+
+                // var _result2 = lodash(items2)
+                //     .groupBy('month')
+                //     .map(function (items, _name) {
+                //         return { name: _name, value: lodash.sumBy(items, function (o) { return o.Total; }), }
+                //     }).value()
+
+                // const response = [
+                //     {
+                //         name: 'الوارد في الصندوق',
+                //         items: _result
+                //     },
+                //     {
+                //         name: 'الصادر في الصندوق',
+                //         items: _result2
+                //     }
+                // ]
+
+                // var _result3 = lodash(_result)
+                //     .groupBy('name')
+                //     .map(function (items, _name) {
+                //         return { name: _name, value: lodash.sumBy(items, function (o) { return o.value; }), }
+                //     }).value()
+
+                reply.send(_result)
+            });
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+//الصادر
+exports.PaymentPerYear2 = async (req, reply) => {
+    try {
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        var items = []
+        await payments.find()
+            .exec(function (err, result) {
+                result.forEach(element => {
+                    var month_number = new Date(element.createAt).getMonth();
+                    var month_name = monthNames[month_number];
+                    if (element.flag == -1) {
+                        items.push({ month: month_name, Total: element.ammount, flag: element.flag })
+                    }
+                });
+
+                var _result = lodash(items)
+                    .groupBy('month')
+                    .map(function (items, _name) {
+                        return { name: _name, value: lodash.sumBy(items, function (o) { return o.Total; }) }
+                    }).value()
+
+                reply.send(_result)
+            });
     } catch (err) {
         throw boom.boomify(err)
     }

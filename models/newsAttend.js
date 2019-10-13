@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 
 const NewsAttendSchema = mongoose.Schema({
     user_id: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Users'
+        type: mongoose.Schema.Types.ObjectId, ref: 'users'
     },
     news_id: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'News'
+        type: mongoose.Schema.Types.ObjectId, ref: 'news'
     },
     createAt: {
         type: Date
@@ -15,6 +15,6 @@ const NewsAttendSchema = mongoose.Schema({
     }
 }, { versionKey: false });
 
-const NewsAttend = mongoose.model('NewsAttend', NewsAttendSchema);
+const NewsAttend = mongoose.model('newsattends', NewsAttendSchema);
 
 exports.NewsAttend = NewsAttend

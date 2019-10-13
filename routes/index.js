@@ -509,6 +509,61 @@ const routes = [
     url: '/api/requestSearch',
     handler: paymentController.getRequsetSearch
   },
+
+
+  {
+    method: 'POST',
+    url: '/api/rpt_history',
+    handler: paymentController.rpt_history
+  },
+  {
+    method: 'POST',
+    url: '/api/rpt_funder',
+    handler: paymentController.rpt_funder
+  },
+  {
+    method: 'POST',
+    url: '/api/rpt_beneficiary',
+    handler: paymentController.rpt_beneficiary
+  },
+  {
+    method: 'POST',
+    url: '/api/rpt_request',
+    handler: paymentController.rpt_request
+  },
+
+
+  {
+    method: 'GET',
+    url: '/api/getMethodFor',
+    handler: paymentController.getMotstMethodFor
+  },
+  {
+    method: 'GET',
+    url: '/api/getMotstMethodType',
+    handler: paymentController.getMotstMethodType
+  },
+  {
+    method: 'GET',
+    url: '/api/getUsersPerYear',
+    handler: paymentController.getUsersPerYear
+  },
+  {
+    method: 'GET',
+    url: '/api/getAdminsPerYear',
+    handler: paymentController.getAdminsPerYear
+  },
+  {
+    method: 'GET',
+    url: '/api/PaymentPerYear',
+    handler: paymentController.PaymentPerYear
+  },
+  {
+    method: 'GET',
+    url: '/api/PaymentPerYear2',
+    handler: paymentController.PaymentPerYear2
+  },
+
 ]
 
 module.exports = routes
