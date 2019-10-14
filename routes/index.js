@@ -17,7 +17,6 @@ const fastify = require('fastify')({
 
 const routes = [
   //admin
-
   {
     method: 'GET',
     url: '/api/getAttend/:news_id',

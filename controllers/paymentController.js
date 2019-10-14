@@ -3,12 +3,14 @@ const boom = require('boom')
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const _ = require('underscore');
 const lodash = require('lodash');
+const cron = require('node-cron');
 
 const { payments, requests, request_approve, bankDetails } = require('../models/Payment')
 const { Users } = require('../models/User')
 const { Admins } = require('../models/Admin')
 const { Notifications } = require('../models/Notifications')
-const { bankfiles, getCurrentDateTime, jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption } = require('../models/Constant')
+const { SuperAdmin } = require('../models/superAdmin')
+const { bankfiles, getCurrentDateTime, jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption, settings } = require('../models/Constant')
 
 
 function CreateNotification(deviceId, msg, order_id, from_userName, to_user_id) {
@@ -60,6 +62,54 @@ function CreateNotification(deviceId, msg, order_id, from_userName, to_user_id) 
         resolve(data);
     });
 }
+
+function CreateNotificationMultiple(deviceId, title, msg, order_id, from_userName, to_user_id) {
+    return new Promise(function (resolve, reject) {
+        let postModel =
+        {
+            "notification": {
+                "title": title,
+                "body": msg,
+                "sound": "default",
+                "icon": "assets/images/logo.png",
+                "badge": 1
+            },
+            "data": {
+                "title": title,
+                "body": msg,
+                "sound": "default",
+                "data": '',
+            },
+            "registration_ids": deviceId
+        };
+        var data = JSON.stringify(postModel);
+        var xhr = new XMLHttpRequest();
+        //xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                console.log('send' + this.responseText);
+            }
+        });
+
+        xhr.open("POST", "https://fcm.googleapis.com/fcm/send");
+        xhr.setRequestHeader("Authorization", 'key=AAAAqt1KWqo:APA91bGORnlJSjsolVNsBTp8WWUE9w8R_yAX77KJNThmwSBum6fDKAwTTzJChayvU1yNzxOK806Z1lGG05m_pUmrQoirSfcpaZV8lv5Gx_-NAW_XZaOeQpcgNUOfTBPzmeyDmtNUbA3k');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(data);
+        resolve(data);
+    });
+}
+
+cron.schedule('0 0 0 1 * *', async () => {
+    const arr = []
+    const devicesID = await Admins.find().select('fcmToken');
+    devicesID.forEach(element => {
+        arr.push(element['fcmToken'])
+    });
+
+    CreateNotificationMultiple(arr, 'تذكير بالتبرع', 'تنبيه بايداع دفعة التبرع وشكرا لتعاونكم معنا')
+    console.log('running a task every minute');
+});
 
 
 // Get Bank Details
@@ -367,6 +417,14 @@ exports.addRequest = async (req, reply) => {
                 });
 
                 let rs = await _requests.save();
+
+                var arr = []
+                const devicesID = await SuperAdmin.find().select('fcmToken');
+                devicesID.forEach(element => {
+                    arr.push(element['fcmToken'])
+                });
+                CreateNotificationMultiple(arr, 'طلب جديد', 'طلب جديد من مستفيد ', '', '', '');
+
                 const response = {
                     status_code: 200,
                     status: true,
@@ -457,13 +515,12 @@ exports.updateRequestByAdmin = async (req, reply) => {
         const _settings = await settings.findOne({ key: 'persons' })
         const approveCount = await request_approve.find({ $and: [{ request_id: req.body.id }] }).count()
         const persons = _settings.value
-
         if (approveCount <= persons) {
             const prevApprove = await request_approve.findOne({ $and: [{ superAdmin_id: req.body.superAdmin_id }, { request_id: req.body.id }] })
             if (prevApprove) {
                 const response = {
                     status_code: 200,
-                    status: true,
+                    status: false,
                     message: 'تم الاعتماد مسبقا',
                     items: null
                 }

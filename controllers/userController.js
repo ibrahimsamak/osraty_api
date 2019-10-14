@@ -14,7 +14,7 @@ var nodemailer = require('nodemailer');
 const { Users } = require('../models/User')
 const { Admins } = require('../models/Admin')
 const { encryptPassword } = require('../utils/utils')
-const { getCurrentDateTime } = require('../models/Constant')
+const { getCurrentDateTime, bankfiles } = require('../models/Constant')
 
 var transporter = nodemailer.createTransport({
     host: 'webhosting2035.is.cc',
@@ -196,11 +196,14 @@ exports.addUser = async (req, reply) => {
                     payment_for: req.body.payment_for,
                     isActivePayment: false
                 }, { new: true })
+                const files = await bankfiles.find({ file_name: 'وثيقة المستفيد' })
+
                 const response = {
                     status_code: 200,
                     status: true,
                     message: 'تمت العملية بنجاح',
-                    items: rs
+                    items: rs,
+                    files: files
                 }
                 return response
             } else {
@@ -218,6 +221,8 @@ exports.addUser = async (req, reply) => {
                 });
 
                 let rs = await _Admins.save();
+                const files = await bankfiles.find({ file_name: 'وثيقة المتبرع' })
+
                 await Admins.findByIdAndUpdate((rs._id), {
                     createAt: getCurrentDateTime(),
                     paymentMethod_type: req.body.paymentMethod_type,
@@ -230,7 +235,8 @@ exports.addUser = async (req, reply) => {
                     status_code: 200,
                     status: true,
                     message: 'تمت العملية بنجاح',
-                    items: rs
+                    items: rs,
+                    files: files
                 }
                 return response
             }
@@ -319,31 +325,53 @@ exports.loginUser = async (req, reply) => {
 
         console.log(_Users)
         if (_Users) {
-            await Users.findByIdAndUpdate((_Users._id), {
-                fcmToken: req.body.fcmToken,
-            }, { new: true })
+            if (_Users.isActivePayment == true) {
+                await Users.findByIdAndUpdate((_Users._id), {
+                    fcmToken: req.body.fcmToken,
+                }, { new: true })
 
-            const response = {
-                type: 'user',
-                status_code: 200,
-                status: true,
-                message: 'return succssfully',
-                items: _Users
+                const response = {
+                    type: 'user',
+                    status_code: 200,
+                    status: true,
+                    message: 'return succssfully',
+                    items: _Users
+                }
+                return response
+            } else {
+                const response = {
+                    type: 'user',
+                    status_code: 400,
+                    status: false,
+                    message: 'عذرا .. الحساب قيد المراجعة',
+                    items: _Users
+                }
+                return response
             }
-            return response
         } else if (_Admin) {
-            await Admins.findByIdAndUpdate((_Admin._id), {
-                fcmToken: req.body.fcmToken,
-            }, { new: true })
+            if (_Admin.isActivePayment == true) {
+                await Admins.findByIdAndUpdate((_Admin._id), {
+                    fcmToken: req.body.fcmToken,
+                }, { new: true })
 
-            const response = {
-                type: 'admin',
-                status_code: 200,
-                status: true,
-                message: 'return succssfully',
-                items: _Admin
+                const response = {
+                    type: 'admin',
+                    status_code: 200,
+                    status: true,
+                    message: 'return succssfully',
+                    items: _Admin
+                }
+                return response
+            } else {
+                const response = {
+                    type: 'admin',
+                    status_code: 400,
+                    status: false,
+                    message: 'عذرا .. الحساب قيد المراجعة',
+                    items: _Users
+                }
+                return response
             }
-            return response
         } else {
             const response = {
                 status_code: 400,

@@ -22,16 +22,16 @@ const SuperAdminschema = mongoose.Schema({
         type: String,
         required: false
     },
-    token:{
+    token: {
         type: String,
         required: false
     },
-    fcmToken:{
+    fcmToken: {
         type: String,
         required: false
     },
-    roles:{
-        type: [{name:{type:String}}]
+    roles: {
+        type: [{ name: { type: String } }]
     }
 }, { versionKey: false });
 

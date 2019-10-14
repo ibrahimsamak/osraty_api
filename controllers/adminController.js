@@ -4,18 +4,12 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const util = require('util');
 var nodemailer = require('nodemailer');
-const cron = require('node-cron');
 
 
 const { Admins } = require('../models/Admin')
 const { Users } = require('../models/User')
 const { encryptPassword } = require('../utils/utils')
 const { getCurrentDateTime } = require('../models/Constant')
-
-
-// cron.schedule('* * * * *', () => {
-//   console.log('running a task every minute');
-// });
 
 var transporter = nodemailer.createTransport({
     host: 'webhosting2035.is.cc',
