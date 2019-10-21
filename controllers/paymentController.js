@@ -102,11 +102,10 @@ function CreateNotificationMultiple(deviceId, title, msg, order_id, from_userNam
 
 cron.schedule('0 0 0 1 * *', async () => {
     const arr = []
-    const devicesID = await Admins.find().select('fcmToken');
+    const devicesID = await Admins.find({ paymentMethod_type: 'اقتطاع شهري' }).select('fcmToken');
     devicesID.forEach(element => {
         arr.push(element['fcmToken'])
     });
-
     CreateNotificationMultiple(arr, 'تذكير بالتبرع', 'تنبيه بايداع دفعة التبرع وشكرا لتعاونكم معنا')
     console.log('running a task every minute');
 });
@@ -413,7 +412,8 @@ exports.addRequest = async (req, reply) => {
                     notes: req.body.notes,
                     // startDate: req.body.startDate,
                     // endDate: req.body.endDate,
-                    type: req.body.type
+                    type: req.body.type,
+                    other: req.body.other
                 });
 
                 let rs = await _requests.save();
@@ -442,7 +442,8 @@ exports.addRequest = async (req, reply) => {
                 notes: req.body.notes,
                 // startDate: req.body.startDate,
                 // endDate: req.body.endDate,
-                type: req.body.type
+                type: req.body.type,
+                other: req.body.other
             });
 
             let rs = await _requests.save();
@@ -553,7 +554,7 @@ exports.updateRequestByAdmin = async (req, reply) => {
                     status: req.body.status,
                     startDate: req.body.startDate,
                     endDate: req.body.endDate,
-                    notes: ''
+                    notes: req.body.notes
                 }, { new: true })
 
                 if (approveCount == persons) {

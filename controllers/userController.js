@@ -418,11 +418,11 @@ exports.forgetPassword = async (req, reply) => {
                     <tr>
                         <td class="m_1006477609114479258header"
                             style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;padding:25px 0;text-align:center">
-                            <a href="www.souqgaz.com"
+                            <a href="www.Ghoshian.com"
                                style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#bbbfc3;font-size:19px;font-weight:bold;text-decoration:none"
                                target="_blank"
-                               data-saferedirecturl="www.souqgaz.com">
-                                Souqgaz
+                               data-saferedirecturl="www.Ghoshian.com">
+                               Ghoshian
                             </a>
                         </td>
                     </tr>
@@ -479,7 +479,7 @@ exports.forgetPassword = async (req, reply) => {
                                         <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">
                                             Thank you for using our application!</p>
                                         <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">
-                                            Regards,<br>Souqgaz</p>
+                                            Regards,<br>Ghoshian</p>
 
                                         <table class="m_1006477609114479258subcopy" width="100%" cellpadding="0"
                                                cellspacing="0"
@@ -488,7 +488,7 @@ exports.forgetPassword = async (req, reply) => {
                                             <tr>
                                                 <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box">
                                                     <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;line-height:1.5em;margin-top:0;text-align:left;font-size:12px">
-                                                        If you’re having trouble clicking the "Your password is: ${newPassword}"
+                                                         "Your password is: ${newPassword}"
                                                         button</p>
                                                 </td>
                                             </tr>
@@ -511,7 +511,7 @@ exports.forgetPassword = async (req, reply) => {
                                     <td class="m_1006477609114479258content-cell" align="center"
                                         style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;padding:35px">
                                         <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;line-height:1.5em;margin-top:0;color:#aeaeae;font-size:12px;text-align:center">
-                                            © 2019 Souqgaz. All rights reserved.</p>
+                                            © 2019 Ghoshian. All rights reserved.</p>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -533,7 +533,7 @@ exports.forgetPassword = async (req, reply) => {
            `
 
             var mailOptions = {
-                from: '"Souqgaz" <no-reply@souqgaz.com>',
+                from: '"Ghoshian" <no-reply@souqgaz.com>',
                 to: req.body.email,
                 subject: 'Forget Password',
                 html: msg
@@ -571,11 +571,11 @@ exports.forgetPassword = async (req, reply) => {
                     <tr>
                         <td class="m_1006477609114479258header"
                             style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;padding:25px 0;text-align:center">
-                            <a href="www.souqgaz.com"
+                            <a href="www.Ghoshian.com"
                                style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#bbbfc3;font-size:19px;font-weight:bold;text-decoration:none"
                                target="_blank"
-                               data-saferedirecturl="www.souqgaz.com">
-                                Souqgaz
+                               data-saferedirecturl="www.Ghoshian.com">
+                               Ghoshian
                             </a>
                         </td>
                     </tr>
@@ -632,7 +632,7 @@ exports.forgetPassword = async (req, reply) => {
                                         <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">
                                             Thank you for using our application!</p>
                                         <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">
-                                            Regards,<br>Souqgaz</p>
+                                            Regards,<br>Ghoshian</p>
 
                                         <table class="m_1006477609114479258subcopy" width="100%" cellpadding="0"
                                                cellspacing="0"
@@ -641,7 +641,7 @@ exports.forgetPassword = async (req, reply) => {
                                             <tr>
                                                 <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box">
                                                     <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;line-height:1.5em;margin-top:0;text-align:left;font-size:12px">
-                                                        If you’re having trouble clicking the "Your password is: ${newPassword}"
+                                                         "Your password is: ${newPassword}"
                                                         button</p>
                                                 </td>
                                             </tr>
@@ -664,7 +664,7 @@ exports.forgetPassword = async (req, reply) => {
                                     <td class="m_1006477609114479258content-cell" align="center"
                                         style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;padding:35px">
                                         <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;line-height:1.5em;margin-top:0;color:#aeaeae;font-size:12px;text-align:center">
-                                            © 2019 Souqgaz. All rights reserved.</p>
+                                            © 2019 Ghoshian. All rights reserved.</p>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -686,7 +686,7 @@ exports.forgetPassword = async (req, reply) => {
            `
 
             var mailOptions = {
-                from: '"Souqgaz" <no-reply@souqgaz.com>',
+                from: '"Ghoshian" <no-reply@souqgaz.com>',
                 to: req.body.email,
                 subject: 'Forget Password',
                 html: msg

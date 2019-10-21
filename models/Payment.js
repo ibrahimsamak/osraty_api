@@ -60,6 +60,9 @@ const RequestSchema = mongoose.Schema({
     notes: {
         type: String
     },
+    other:{
+        type:String
+    },
     type: {
         type: mongoose.Schema.Types.ObjectId, ref: 'paymentfors'
     }

@@ -315,6 +315,8 @@ const routes = [
   {
     method: 'POST',
     url: '/api/user_login',
+    // beforeHandler: [auth.getToken],
+
     handler: userController.loginUser
   },
   {
