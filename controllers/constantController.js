@@ -557,7 +557,7 @@ exports.addContact = async (req, reply) => {
         const response = {
             status_code: 200,
             status: true,
-            message: 'return succssfully',
+            message: 'تم ارسال رسالتك الى الادارة .. سيتم الرد عليكم عبر البريد الالكتروني في أقرب وقت',
             items: rs
         }
         return response

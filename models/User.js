@@ -83,6 +83,9 @@ const UserSchema = mongoose.Schema({
     },
     payment_for: {
         type: mongoose.Schema.Types.ObjectId, ref: 'paymentfors'
+    },
+    user_type:{
+        type:String
     }
 }, { versionKey: false });
 
