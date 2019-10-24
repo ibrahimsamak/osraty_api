@@ -102,7 +102,7 @@ function CreateNotificationMultiple(deviceId, title, msg, order_id, from_userNam
 
 cron.schedule('0 0 0 1 * *', async () => {
     const arr = []
-    const devicesID = await Admins.find({ paymentMethod_type: 'اقتطاع شهري' }).select('fcmToken');
+    const devicesID = await Admins.find({ $and: [{ paymentMethod_type: 'اقتطاع شهري' }, { isActivePayment: true }] }).select('fcmToken');
     devicesID.forEach(element => {
         arr.push(element['fcmToken'])
     });
@@ -207,6 +207,35 @@ exports.addPayment = async (req, reply) => {
     }
 }
 
+exports.verfiyPayment = async (req, reply) => {
+    try {
+        // status
+        // 1: Payment from user
+        // 2: verify payment from admin
+
+        let _payments = new payments({
+            ammount: req.body.ammount,
+            from_user: req.body.from_user,
+            methodType: req.body.methodType,
+            isActive: true,
+            status: 2,
+            flag: 1,
+            createAt: getCurrentDateTime()
+        });
+
+        let rs = await _payments.save();
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'تمت العملية بنجاح',
+            items: rs
+        }
+        return response
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
 exports.addPaymentToUser = async (req, reply) => {
     try {
         // status
@@ -218,7 +247,7 @@ exports.addPaymentToUser = async (req, reply) => {
             to_user: req.body.to_user,
             methodFor: req.body.methodFor,
             isActive: true,
-            status: 1,
+            status: 2,
             flag: -1,
             createAt: getCurrentDateTime()
         });
@@ -325,7 +354,7 @@ exports.getPaymentAdmin = async (req, reply) => {
 // de-activate payments
 exports.deActivate = async (req, reply) => {
     try {
-        const LastPayments = await payments.find({ $and: [{ user_id: req.body.user_id }, { isActive: true }] }).sort({ id: -1 })
+        const LastPayments = await payments.find({ $and: [{ from_user: req.body.user_id }, { isActive: true }] }).sort({ id: -1 })
             .limit(1)
         var id = ""
         if (LastPayments.length > 0) {
@@ -699,7 +728,7 @@ exports.getRequestUser = async (req, reply) => {
         var limit = parseInt(req.query.limit, 10)
         var totalPayment = 0
 
-        await payments.find({ to_user: req.params.id }).sort({ _id: -1 })
+        await payments.find({ $and: [{ to_user: req.params.id }, { status: 2 }] }).sort({ _id: -1 })
             .exec(function (err, result) {
                 result.forEach(element => {
                     totalPayment += element.ammount
@@ -757,7 +786,7 @@ exports.getLastRequest = async (req, reply) => {
         var totalPayment = 0
         await requests.findById(req.params.id).exec(async function (err, _result) {
             console.log(_result)
-            await payments.find({ $and: [{ to_user: _result.user_id }, { methodFor: _result.type }, { isActive: true }] }).sort({ _id: -1 })
+            await payments.find({ $and: [{ to_user: _result.user_id }, { methodFor: _result.type }, { isActive: true }, { status: 2 }] }).sort({ _id: -1 })
                 .exec(function (err, result) {
                     console.log(result)
                     result.forEach(element => {
@@ -822,6 +851,7 @@ exports.rpt_history = async (req, reply) => {
             }
         }
 
+        query['status'] = 2
         var page = parseInt(req.query.page, 10)
         var limit = parseInt(req.query.limit, 10)
         const total = await payments.find(query).count();
@@ -869,9 +899,9 @@ exports.rpt_funder = async (req, reply) => {
         }
         if (req.body.status) {
             if (req.body.status == 'true') {
-                query['isActive'] = true
+                query['status'] = 2
             } else if (req.body.status == 'false') {
-                query['isActive'] = false
+                query['status'] = 1
             }
         }
         query['flag'] = 1
@@ -925,6 +955,7 @@ exports.rpt_beneficiary = async (req, reply) => {
             query['methodFor'] = req.body.methodFor
         }
         query['flag'] = -1
+        query['status'] = 2
         // query['to_user'] = { $exists: true }
         // query['methodFor'] = { $exists: true }
 
@@ -1211,7 +1242,7 @@ exports.PaymentPerYear = async (req, reply) => {
         ];
 
         var items = []
-        await payments.find()
+        await payments.find({ status: 2 })
             .exec(function (err, result) {
                 result.forEach(element => {
                     var month_number = new Date(element.createAt).getMonth();
@@ -1265,7 +1296,7 @@ exports.PaymentPerYear2 = async (req, reply) => {
         ];
 
         var items = []
-        await payments.find()
+        await payments.find({ status: 2 })
             .exec(function (err, result) {
                 result.forEach(element => {
                     var month_number = new Date(element.createAt).getMonth();

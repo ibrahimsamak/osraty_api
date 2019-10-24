@@ -432,6 +432,11 @@ const routes = [
   },
   {
     method: 'POST',
+    url: '/api/verfiyPayment',
+    handler: paymentController.verfiyPayment
+  },
+  {
+    method: 'POST',
     url: '/api/PaymentToUser',
     handler: paymentController.addPaymentToUser
   },

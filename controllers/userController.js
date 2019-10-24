@@ -745,7 +745,7 @@ exports.resetPasswordUsers = async (req, reply) => {
         const response = {
             status_code: 200,
             status: true,
-            message: 'return succssfully',
+            message: 'تم تعديل كلمة المرور بنجاح',
             items: _user
         }
         return response
@@ -785,7 +785,7 @@ exports.resetEmailUsers = async (req, reply) => {
             const response = {
                 status_code: 200,
                 status: true,
-                message: 'return succssfully',
+                message: 'تم تعديل البريد الالكتروني بنجاح',
                 items: _user
             }
             return response
