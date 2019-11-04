@@ -152,18 +152,21 @@ exports.addAdmins = async (req, reply) => {
                 password: encryptPassword(req.body.password),
                 phone_number: req.body.phone_number,
                 Id_no: req.body.Id_no,
-                fcmToken: req.body.fcmToken,
-                token: jwt.sign({ _id: req.body.id }, config.get('jwtPrivateKey'), {
-                    expiresIn: '365d'
-                }),
+                fcmToken: req.body.fcmToken
             });
 
             let rs = await _Admins.save();
+            const _Adminss = await Admins.findByIdAndUpdate((rs._id), {
+                token: jwt.sign({ _id: rs._id }, config.get('jwtPrivateKey'), {
+                    expiresIn: '365d'
+                })
+            }, { new: true })
+
             const response = {
                 status_code: 200,
                 status: true,
                 message: 'تمت العملية بنجاح',
-                items: rs
+                items: _Adminss
             }
             return response
         }

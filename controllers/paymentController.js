@@ -371,7 +371,7 @@ exports.deActivate = async (req, reply) => {
         const response = {
             status_code: 200,
             status: true,
-            message: 'تمت العميلة بنجاح',
+            message: 'تم ايقاف التبرع بنجاح',
             items: _payments
         }
         return response

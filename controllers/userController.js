@@ -168,14 +168,14 @@ exports.addUser = async (req, reply) => {
                     password: encryptPassword(req.body.password),
                     phone_number: req.body.phone_number,
                     Id_no: req.body.Id_no,
-                    token: jwt.sign({ _id: req.body.id }, config.get('jwtPrivateKey'), {
-                        expiresIn: '365d'
-                    }),
                     fcmToken: req.body.fcmToken,
                     user_type: req.body.user_type
                 });
                 let rs = await _Users.save();
-                await Users.findByIdAndUpdate((rs._id), {
+                let user = await Users.findByIdAndUpdate((rs._id), {
+                    token: jwt.sign({ _id: rs._id, user_type: req.body.user_type }, config.get('jwtPrivateKey'), {
+                        expiresIn: '365d'
+                    }),
                     gender: req.body.gender,
                     social_status: req.body.social_status,
                     has_children: req.body.has_children,
@@ -202,7 +202,7 @@ exports.addUser = async (req, reply) => {
                     status_code: 200,
                     status: true,
                     message: 'تمت العملية بنجاح',
-                    items: rs,
+                    items: user,
                     files: files
                 }
                 return response
@@ -214,28 +214,28 @@ exports.addUser = async (req, reply) => {
                     phone_number: req.body.phone_number,
                     Id_no: req.body.Id_no,
                     fcmToken: req.body.fcmToken,
-                    token: jwt.sign({ _id: req.body.id }, config.get('jwtPrivateKey'), {
-                        expiresIn: '365d'
-                    }),
                     user_type: req.body.user_type
                 });
 
                 let rs = await _Admins.save();
                 const files = await bankfiles.find({ file_name: 'وثيقة المتبرع' })
 
-                await Admins.findByIdAndUpdate((rs._id), {
+                let admin = await Admins.findByIdAndUpdate((rs._id), {
                     createAt: getCurrentDateTime(),
                     paymentMethod_type: req.body.paymentMethod_type,
                     ammount: req.body.ammount,
                     paymentMethod_id: req.body.paymentMethod_id,
                     type: req.body.type,
-                    isActivePayment: false
+                    isActivePayment: false,
+                    token: jwt.sign({ _id: rs._id, user_type: req.body.user_type }, config.get('jwtPrivateKey'), {
+                        expiresIn: '365d'
+                    }),
                 }, { new: true })
                 const response = {
                     status_code: 200,
                     status: true,
                     message: 'تمت العملية بنجاح',
-                    items: rs,
+                    items: admin,
                     files: files
                 }
                 return response
@@ -463,7 +463,7 @@ exports.forgetPassword = async (req, reply) => {
                                                                         <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box">
                                                                             <a class="m_1006477609114479258button m_1006477609114479258button-primary"
                                                                                style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;border-radius:3px;color:#fff;display:inline-block;text-decoration:none;background-color:#3490dc;border-top:10px solid #3490dc;border-right:18px solid #3490dc;border-bottom:10px solid #3490dc;border-left:18px solid #3490dc">Your
-                                                                                new password is: ${newPassword}</a>
+                                                                                new password is: ${_newPassword}</a>
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>
@@ -488,7 +488,7 @@ exports.forgetPassword = async (req, reply) => {
                                             <tr>
                                                 <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box">
                                                     <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;line-height:1.5em;margin-top:0;text-align:left;font-size:12px">
-                                                         "Your password is: ${newPassword}"
+                                                         "Your password is: ${_newPassword}"
                                                         button</p>
                                                 </td>
                                             </tr>
@@ -616,7 +616,7 @@ exports.forgetPassword = async (req, reply) => {
                                                                         <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box">
                                                                             <a class="m_1006477609114479258button m_1006477609114479258button-primary"
                                                                                style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;border-radius:3px;color:#fff;display:inline-block;text-decoration:none;background-color:#3490dc;border-top:10px solid #3490dc;border-right:18px solid #3490dc;border-bottom:10px solid #3490dc;border-left:18px solid #3490dc">Your
-                                                                                new password is: ${newPassword}</a>
+                                                                                new password is: ${_newPassword}</a>
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>
@@ -641,7 +641,7 @@ exports.forgetPassword = async (req, reply) => {
                                             <tr>
                                                 <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box">
                                                     <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';box-sizing:border-box;color:#3d4852;line-height:1.5em;margin-top:0;text-align:left;font-size:12px">
-                                                         "Your password is: ${newPassword}"
+                                                         "Your password is: ${_newPassword}"
                                                         button</p>
                                                 </td>
                                             </tr>

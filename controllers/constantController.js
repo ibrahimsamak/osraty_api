@@ -541,7 +541,6 @@ exports.contactSearch = async (req, reply) => {
     }
 }
 
-
 exports.addContact = async (req, reply) => {
     try {
         let ContactOptions = new ContactOption({
