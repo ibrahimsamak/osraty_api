@@ -264,6 +264,7 @@ exports.updateNews = async (req, reply) => {
 
 exports.deleteNews = async (req, reply) => {
   try {
+    console.log(req);
     await News.findByIdAndRemove(req.params.id);
     const response = {
       status_code: 200,
