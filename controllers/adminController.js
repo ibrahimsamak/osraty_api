@@ -23,6 +23,13 @@ var transporter = nodemailer.createTransport({
 
 
 // Get all Admins
+/**
+ * Retrieve admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getAdmins = async (req, reply) => {
     try {
         if (req.query.page) {
@@ -70,6 +77,13 @@ exports.getAdmins = async (req, reply) => {
 }
 
 // Get search
+/**
+ * Retrieve users search.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getUsersSearch = async (req, reply) => {
     try {
 
