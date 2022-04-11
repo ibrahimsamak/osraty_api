@@ -201,6 +201,13 @@ exports.addAdmins = async (req, reply) => {
 }
 
 // delete Admins
+/**
+ * Block admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.BlockeAdmins = async (req, reply) => {
     const _Admins = await Admins.findByIdAndUpdate((req.params.id), {
         isBlock: req.body.isBlock,
@@ -217,6 +224,13 @@ exports.BlockeAdmins = async (req, reply) => {
 }
 
 // activate Admins 
+/**
+ * Activate admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.activateAdmins = async (req, reply) => {
     const _Admins = await Admins.findByIdAndUpdate((req.params.id), {
         isActivate: req.body.isActivate,
