@@ -113,6 +113,13 @@ exports.getUsersSearch = async (req, reply) => {
 }
 
 // Get single Admins by ID
+/**
+ * Retrieve single admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSingleAdmins = async (req, reply) => {
     try {
         const _Admins = await Admins.findById((req.params.id))
@@ -131,6 +138,13 @@ exports.getSingleAdmins = async (req, reply) => {
 }
 
 // Add a new Admins
+/**
+ * Create admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addAdmins = async (req, reply) => {
     try {
         const pervAdminEmail = await Admins.findOne({ $or: [{ email: String(req.body.email).toLowerCase() }, { phone_number: req.body.phone_number }] }).lean()
