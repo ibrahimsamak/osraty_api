@@ -247,6 +247,13 @@ exports.activateAdmins = async (req, reply) => {
 }
 
 // Update an existing Admins
+/**
+ * Update admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateAdmins = async (req, reply) => {
     try {
         const _Admins = await Admins.findByIdAndUpdate((req.params.id), {
@@ -271,6 +278,13 @@ exports.updateAdmins = async (req, reply) => {
 }
 
 // login Admins
+/**
+ * Authenticate admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.loginAdmins = async (req, reply) => {
     try {
         const pass = encryptPassword(req.body.password)
