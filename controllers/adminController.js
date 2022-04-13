@@ -322,6 +322,13 @@ exports.loginAdmins = async (req, reply) => {
 
 
 //forget password
+/**
+ * Handle forgot-password for password admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.forgetPasswordAdmins = async (req, reply) => {
     try {
         const _Users = await Admins.findOne({ $and: [{ email: String(req.body.email).toLowerCase() }, { phone_number: req.body.phone_number }] })
@@ -493,6 +500,13 @@ exports.forgetPasswordAdmins = async (req, reply) => {
 }
 
 //reset password
+/**
+ * Reset password admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.resetPasswordAdmins = async (req, reply) => {
     try {
         // const pervAdminEmail = await Admins.findOne({ phone_number: req.body.phone_number }).lean()
