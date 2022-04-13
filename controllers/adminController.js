@@ -548,6 +548,13 @@ exports.resetPasswordAdmins = async (req, reply) => {
 }
 
 //reset email
+/**
+ * Reset email admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.resetEmailAdmins = async (req, reply) => {
     try {
         const pervAdminEmail = await Admins.findOne({ email: String(req.body.email).toLowerCase() }).lean()

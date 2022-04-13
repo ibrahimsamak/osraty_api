@@ -31,6 +31,13 @@ async function uploadImages(img) {
 }
 
 // cPanel
+/**
+ * Retrieve all settings.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getAllSettings = async (req, reply) => {
     try {
         const _settings = await settings.find().sort({ _id: -1 });
