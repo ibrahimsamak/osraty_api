@@ -56,6 +56,13 @@ exports.getAllSettings = async (req, reply) => {
 }
 
 
+/**
+ * Retrieve all constants.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getAllConstants = async (req, reply) => {
     try {
         const staticpages = await StaticPage.find().sort({ _id: -1 });
@@ -78,6 +85,13 @@ exports.getAllConstants = async (req, reply) => {
 }
 
 
+/**
+ * Addcategories.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addcategories = async (req, reply) => {
     try {
         let _categories = new categories({
