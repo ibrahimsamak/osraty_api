@@ -112,6 +112,13 @@ exports.addcategories = async (req, reply) => {
     }
 }
 
+/**
+ * Updatecategories.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updatecategories = async (req, reply) => {
     try {
         const _categories = await categories.findByIdAndUpdate((req.params.id), {
@@ -131,6 +138,13 @@ exports.updatecategories = async (req, reply) => {
     }
 }
 
+/**
+ * Deletecategories.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deletecategories = async (req, reply) => {
     try {
         const _categories = await categories.findByIdAndRemove(req.params.id);
