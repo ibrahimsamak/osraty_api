@@ -162,6 +162,13 @@ exports.deletecategories = async (req, reply) => {
     }
 }
 
+/**
+ * Getcategories.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getcategories = async (req, reply) => {
     try {
         const _categories = await categories.find();
@@ -179,6 +186,13 @@ exports.getcategories = async (req, reply) => {
 }
 
 
+/**
+ * Addpayment method.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addpaymentMethod = async (req, reply) => {
     try {
         let _paymentMethods = new paymentMethods({
