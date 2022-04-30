@@ -265,6 +265,13 @@ exports.deletepaymentMethods = async (req, reply) => {
     }
 }
 
+/**
+ * Getpayment methods.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getpaymentMethods = async (req, reply) => {
     try {
         const _paymentMethods = await paymentMethods.find();
@@ -282,6 +289,13 @@ exports.getpaymentMethods = async (req, reply) => {
 }
 
 
+/**
+ * Addloans.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addloans = async (req, reply) => {
     try {
         let _loans = new loans({
