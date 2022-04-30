@@ -214,6 +214,13 @@ exports.addpaymentMethod = async (req, reply) => {
     }
 }
 
+/**
+ * Updatepayment method.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updatepaymentMethod = async (req, reply) => {
     try {
         const _paymentMethods = await paymentMethods.findByIdAndUpdate((req.params.id), {
@@ -234,6 +241,13 @@ exports.updatepaymentMethod = async (req, reply) => {
     }
 }
 
+/**
+ * Deletepayment methods.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deletepaymentMethods = async (req, reply) => {
     try {
         const _paymentMethods = await paymentMethods.findByIdAndRemove(req.params.id);
