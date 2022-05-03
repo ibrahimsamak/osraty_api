@@ -366,6 +366,13 @@ exports.deleteloans = async (req, reply) => {
     }
 }
 
+/**
+ * Getloans.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getloans = async (req, reply) => {
     try {
         const _loans = await loans.find();
@@ -383,6 +390,13 @@ exports.getloans = async (req, reply) => {
 }
 
 
+/**
+ * Create jobs.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addJobs = async (req, reply) => {
     try {
         let _jobs = new jobs({
