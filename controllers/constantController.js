@@ -316,6 +316,13 @@ exports.addloans = async (req, reply) => {
     }
 }
 
+/**
+ * Updateloans.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateloans = async (req, reply) => {
     try {
         const _loans = await loans.findByIdAndUpdate((req.params.id), {
@@ -335,6 +342,13 @@ exports.updateloans = async (req, reply) => {
     }
 }
 
+/**
+ * Deleteloans.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deleteloans = async (req, reply) => {
     try {
         const _loans = await loans.findByIdAndRemove(req.params.id);
