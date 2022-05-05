@@ -417,6 +417,13 @@ exports.addJobs = async (req, reply) => {
     }
 }
 
+/**
+ * Update jobs.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateJobs = async (req, reply) => {
     try {
         const _jobs = await jobs.findByIdAndUpdate((req.params.id), {
@@ -436,6 +443,13 @@ exports.updateJobs = async (req, reply) => {
     }
 }
 
+/**
+ * Remove jobs.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deleteJobs = async (req, reply) => {
     try {
         const _jobs = await jobs.findByIdAndRemove(req.params.id);
