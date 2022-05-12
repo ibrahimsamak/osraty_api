@@ -467,6 +467,13 @@ exports.deleteJobs = async (req, reply) => {
     }
 }
 
+/**
+ * Retrieve jobs.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getJobs = async (req, reply) => {
     try {
         const _jobs = await jobs.find();
@@ -485,6 +492,13 @@ exports.getJobs = async (req, reply) => {
 
 
 
+/**
+ * Addpaymentfor.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addpaymentfor = async (req, reply) => {
     try {
         let _paymentFors = new paymentFors({
