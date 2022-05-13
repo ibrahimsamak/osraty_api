@@ -569,6 +569,13 @@ exports.deletepaymentFors = async (req, reply) => {
     }
 }
 
+/**
+ * Getpaymentfor.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getpaymentfor = async (req, reply) => {
     try {
         const _paymentFors = await paymentFors.find();
@@ -586,6 +593,13 @@ exports.getpaymentfor = async (req, reply) => {
 }
 
 
+/**
+ * Retrieve static page.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getStaticPage = async (req, reply) => {
     try {
         const staticpages = await StaticPage.find().sort({ _id: -1 });
@@ -603,6 +617,13 @@ exports.getStaticPage = async (req, reply) => {
     }
 }
 
+/**
+ * Retrieve single static.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSingleStatic = async (req, reply) => {
     try {
         const StaticPages = await StaticPage.findById(req.params.id);
