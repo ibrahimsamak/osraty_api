@@ -519,6 +519,13 @@ exports.addpaymentfor = async (req, reply) => {
     }
 }
 
+/**
+ * Updatepayment fors.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updatepaymentFors = async (req, reply) => {
     try {
         const _paymentFors = await paymentFors.findByIdAndUpdate((req.params.id), {
@@ -538,6 +545,13 @@ exports.updatepaymentFors = async (req, reply) => {
     }
 }
 
+/**
+ * Deletepayment fors.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deletepaymentFors = async (req, reply) => {
     try {
         const _paymentFors = await paymentFors.findByIdAndRemove(req.params.id);
