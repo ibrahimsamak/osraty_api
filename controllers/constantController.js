@@ -640,6 +640,13 @@ exports.getSingleStatic = async (req, reply) => {
     }
 }
 
+/**
+ * Create static.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addStatic = async (req, reply) => {
     try {
         let staticpages = new StaticPage({
@@ -661,6 +668,13 @@ exports.addStatic = async (req, reply) => {
     }
 }
 
+/**
+ * Update static.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateStatic = async (req, reply) => {
     try {
         const staticpages = await StaticPage.findByIdAndUpdate((req.params.id), {
