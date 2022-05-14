@@ -693,6 +693,13 @@ exports.updateStatic = async (req, reply) => {
     }
 }
 
+/**
+ * Remove static.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deleteStatic = async (req, reply) => {
     try {
         const staticpages = await StaticPage.findByIdAndRemove(req.params.id);
@@ -712,6 +719,13 @@ exports.deleteStatic = async (req, reply) => {
 
 
 
+/**
+ * Retrieve bank account.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getBankAccount = async (req, reply) => {
     try {
         const _BankAccount = await BankAccount.find().sort({ _id: -1 });
