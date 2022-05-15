@@ -743,6 +743,13 @@ exports.getBankAccount = async (req, reply) => {
     }
 }
 
+/**
+ * Retrieve single bank account.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSingleBankAccount = async (req, reply) => {
     try {
         const _BankAccount = await BankAccount.findById(req.params.id);
@@ -759,6 +766,13 @@ exports.getSingleBankAccount = async (req, reply) => {
     }
 }
 
+/**
+ * Update bank account.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateBankAccount = async (req, reply) => {
     try {
         const _BankAccount = await BankAccount.findByIdAndUpdate((req.params.id), {
@@ -777,6 +791,13 @@ exports.updateBankAccount = async (req, reply) => {
     }
 }
 
+/**
+ * Remove bank.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deleteBank = async (req, reply) => {
     try {
         const _BankAccount = await BankAccount.findByIdAndRemove(req.params.id);
