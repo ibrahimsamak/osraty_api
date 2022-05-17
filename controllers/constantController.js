@@ -883,6 +883,13 @@ exports.contactSearch = async (req, reply) => {
     }
 }
 
+/**
+ * Create contact.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addContact = async (req, reply) => {
     try {
         let ContactOptions = new ContactOption({
@@ -908,6 +915,13 @@ exports.addContact = async (req, reply) => {
     }
 }
 
+/**
+ * Remove contact.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deleteContact = async (req, reply) => {
     try {
         const ContactOptions = await ContactOption.findByIdAndRemove(req.params.id);
