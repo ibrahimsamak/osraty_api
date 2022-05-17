@@ -817,6 +817,13 @@ exports.deleteBank = async (req, reply) => {
 
 
 
+/**
+ * Retrieve contact.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getContact = async (req, reply) => {
     try {
         var page = parseInt(req.query.page, 10)
@@ -843,6 +850,13 @@ exports.getContact = async (req, reply) => {
     }
 }
 
+/**
+ * Contact search.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.contactSearch = async (req, reply) => {
     try {
         var page = parseInt(req.query.page, 10)
