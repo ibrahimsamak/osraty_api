@@ -939,6 +939,13 @@ exports.deleteContact = async (req, reply) => {
 }
 
 
+/**
+ * Retrieve files.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getFiles = async (req, reply) => {
     try {
         const _bankfiles = await bankfiles.find();
@@ -955,6 +962,13 @@ exports.getFiles = async (req, reply) => {
     }
 }
 
+/**
+ * Retrieve single files.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSingleFiles = async (req, reply) => {
     try {
         const _bankfiles = await bankfiles.findById(req.params.id);
