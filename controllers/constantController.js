@@ -985,6 +985,13 @@ exports.getSingleFiles = async (req, reply) => {
     }
 }
 
+/**
+ * Create file.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addFile = async (req, reply) => {
     try {
         if (req.raw.files) {
@@ -1030,6 +1037,13 @@ exports.addFile = async (req, reply) => {
     }
 }
 
+/**
+ * Update file.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateFile = async (req, reply) => {
     try {
         if (req.raw.files) {
