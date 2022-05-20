@@ -3,6 +3,13 @@ const async = require("async");
 
 const { Favorite } = require("../models/Favorite");
 
+/**
+ * Retrieve favorite by user id.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getFavoriteByUserId = async (req, reply) => {
   try {
     var returnArr = [];
@@ -33,6 +40,13 @@ exports.getFavoriteByUserId = async (req, reply) => {
   }
 };
 
+/**
+ * Create delete favorite.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addDeleteFavorite = async (req, reply) => {
   try {
     const checkProvider = await Favorite.findOne({news_id:req.body.news_id});
