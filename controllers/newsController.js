@@ -30,6 +30,13 @@ async function uploadImages(img) {
   });
 }
 
+/**
+ * Retrieve news.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getNews = async (req, reply) => {
   try {
     var newResult = [];
@@ -115,6 +122,13 @@ exports.getNews = async (req, reply) => {
   }
 };
 
+/**
+ * Retrieve articles.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getArticles = async (req, reply) => {
   try {
     var newResult = [];
