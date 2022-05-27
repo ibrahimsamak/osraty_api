@@ -172,6 +172,13 @@ exports.getArticles = async (req, reply) => {
   }
 };
 
+/**
+ * Retrieve single news.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSingleNews = async (req, reply) => {
   try {
     const rs = await News.findById(req.params.id).sort({ _id: -1 });
@@ -189,6 +196,13 @@ exports.getSingleNews = async (req, reply) => {
   }
 };
 
+/**
+ * Create news.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addNews = async (req, reply) => {
   try {
     if (req.raw.files) {
