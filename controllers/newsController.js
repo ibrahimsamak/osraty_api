@@ -257,6 +257,13 @@ exports.addNews = async (req, reply) => {
   }
 };
 
+/**
+ * Update news.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateNews = async (req, reply) => {
   try {
     if (req.raw.files) {
@@ -335,6 +342,13 @@ exports.updateNews = async (req, reply) => {
   }
 };
 
+/**
+ * Remove news.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deleteNews = async (req, reply) => {
   try {
     console.log(req);
