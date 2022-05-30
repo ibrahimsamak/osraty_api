@@ -367,6 +367,13 @@ exports.deleteNews = async (req, reply) => {
 };
 
 //post going event
+/**
+ * Update going.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateGoing = async (req, reply) => {
   try {
     const checkrecord = await NewsAttend.findOne({
@@ -411,6 +418,13 @@ exports.updateGoing = async (req, reply) => {
   }
 };
 
+/**
+ * Retrieve attend.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getAttend = async (req, reply) => {
   try {
     var page = parseInt(req.query.page, 10);
