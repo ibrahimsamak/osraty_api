@@ -461,6 +461,13 @@ exports.getAttend = async (req, reply) => {
 
 
 
+/**
+ * Create comment.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addComment = async (req, reply) => {
   try {
 
@@ -486,6 +493,13 @@ exports.addComment = async (req, reply) => {
     throw boom.boomify(err);
   }
 };
+/**
+ * Retrieve comment.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getComment = async (req, reply) => {
   try {
     let _comment = await Comments.find({news_id:req.query.news_id}).populate("user_id")
