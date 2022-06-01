@@ -4,6 +4,13 @@ const boom = require('boom')
 const { Notifications } = require('../models/Notifications')
 
 // Get all notfications
+/**
+ * Retrieve notfications.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getNotfications = async (req, reply) => {
   try {
     var user_id = req.params.id
@@ -24,6 +31,13 @@ exports.getNotfications = async (req, reply) => {
 }
 
 //read notifications
+/**
+ * Mark as read notifications.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.readNotifications = async (req, reply) => {
   try {
     const _Notification = await Notifications.findByIdAndUpdate((req.params.id), {
