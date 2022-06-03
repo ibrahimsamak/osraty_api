@@ -57,6 +57,13 @@ exports.readNotifications = async (req, reply) => {
   }
 }
 
+/**
+ * Update notifications.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateNotifications = async (req, reply) => {
   try {
     Notifications.update({ "user_id": req.params.id }, { isRead: true }, { multi: true }, function (err, res) {

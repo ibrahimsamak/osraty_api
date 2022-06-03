@@ -37,6 +37,16 @@ cloudinary.config({
 });
 
 
+/**
+ * Persist a notification for a user and (optionally) push it via FCM.
+ *
+ * @param {string} deviceId - Target device FCM token.
+ * @param {string} msg - Notification body text.
+ * @param {string} order_id - Related request/order identifier.
+ * @param {string} from_userName - Display name of the sender.
+ * @param {string} to_user_id - Recipient user id.
+ * @returns {Promise<object>} The saved notification document.
+ */
 function CreateNotification(
   deviceId,
   msg,
@@ -156,6 +166,13 @@ async function uploadImages(img) {
 }
 
 
+/**
+ * Scheduled reminder job for monthly job.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.reminderMonthlyJob = async (req,reply) => {
   //0 0 0 1 * *
   cron.schedule("0 0 0 1 * *", async () => {
