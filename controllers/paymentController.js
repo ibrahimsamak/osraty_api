@@ -437,6 +437,13 @@ exports.addBankDetails = async (req, reply) => {
 };
 
 //add payment
+/**
+ * Create payment.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addPayment = async (req, reply) => {
   try {
     // status
@@ -478,6 +485,13 @@ exports.addPayment = async (req, reply) => {
 };
 
 
+/**
+ * Approve payment by user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.approvePaymentByUser = async (req, reply) => {
   try {
     let rs = await payments.findByIdAndUpdate(req.body.id,{status:1},{new:true})
