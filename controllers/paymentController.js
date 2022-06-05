@@ -223,6 +223,13 @@ exports.reminderMonthlyJob = async (req,reply) => {
   });
 }
 
+/**
+ * Scheduled reminder job for yearly job.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.reminderYearlyJob = async (req,reply) => {
   cron.schedule("0 0 1 1 *", async () => {
     const arr = [];
@@ -273,6 +280,13 @@ exports.reminderYearlyJob = async (req,reply) => {
 }
 
 // Get Bank Details
+/**
+ * Retrieve bank details.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getBankDetails = async (req, reply) => {
   try {
     const _bankDetails = await bankDetails.findOne({ user_id: req.params.id });
@@ -291,6 +305,13 @@ exports.getBankDetails = async (req, reply) => {
 };
 
 // add bank details
+/**
+ * Create bank details.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addBankDetails = async (req, reply) => {
   try {
     // status
