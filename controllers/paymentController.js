@@ -508,6 +508,13 @@ exports.approvePaymentByUser = async (req, reply) => {
   }
 };
 
+/**
+ * Verify payment.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.verfiyPayment = async (req, reply) => {
   try {
     // status
@@ -540,6 +547,13 @@ exports.verfiyPayment = async (req, reply) => {
   }
 };
 
+/**
+ * Create payment to user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addPaymentToUser = async (req, reply) => {
   try {
     // status
