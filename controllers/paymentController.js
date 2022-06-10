@@ -595,6 +595,13 @@ exports.addPaymentToUser = async (req, reply) => {
 };
 
 //get single user
+/**
+ * Retrieve single payment.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSinglePayment = async (req, reply) => {
   try {
     const _payments = await payments
@@ -616,6 +623,13 @@ exports.getSinglePayment = async (req, reply) => {
 };
 
 // get for super admins
+/**
+ * Retrieve payment all for admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getPaymentAllForAdmin = async (req, reply) => {
   try {
     const rs = await payments
