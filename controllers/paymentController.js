@@ -741,6 +741,13 @@ exports.deActivate = async (req, reply) => {
 };
 
 // get last 20 payments for user in cp
+/**
+ * Getlast20payment for user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getlast20PaymentForUser = async (req, reply) => {
   try {
     var totalPayment = 0;
@@ -785,6 +792,13 @@ exports.getlast20PaymentForUser = async (req, reply) => {
 };
 
 //add request
+/**
+ * Create request.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addRequest = async (req, reply) => {
   try {
     // stauts
