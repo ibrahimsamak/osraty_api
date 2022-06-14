@@ -1078,6 +1078,13 @@ exports.updateRequestByAdmin = async (req, reply) => {
 };
 
 // get request for super admins
+/**
+ * Retrieve request all for admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getRequestAllForAdmin = async (req, reply) => {
   try {
     var page = parseInt(req.query.page, 10);
@@ -1109,6 +1116,13 @@ exports.getRequestAllForAdmin = async (req, reply) => {
 };
 
 // Get search
+/**
+ * Retrieve requset search.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getRequsetSearch = async (req, reply) => {
   try {
     var page = parseInt(req.query.page, 10);
