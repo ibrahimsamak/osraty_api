@@ -653,6 +653,13 @@ exports.getPaymentAllForAdmin = async (req, reply) => {
 };
 
 // get for admin
+/**
+ * Retrieve payment admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getPaymentAdmin = async (req, reply) => {
   try {
     // var page = parseInt(req.query.page, 10);
@@ -694,6 +701,13 @@ exports.getPaymentAdmin = async (req, reply) => {
 };
 
 // de-activate payments
+/**
+ * De activate.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deActivate = async (req, reply) => {
   try {
     // const LastPayments = await payments
