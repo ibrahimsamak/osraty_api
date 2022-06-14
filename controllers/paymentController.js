@@ -901,6 +901,13 @@ exports.addRequest = async (req, reply) => {
 };
 
 // update status in request
+/**
+ * Update request.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateRequest = async (req, reply) => {
   try {
     // stauts
@@ -947,6 +954,13 @@ exports.updateRequest = async (req, reply) => {
   }
 };
 
+/**
+ * Update request by admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateRequestByAdmin = async (req, reply) => {
   try {
     // stauts
