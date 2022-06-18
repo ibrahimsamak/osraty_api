@@ -1201,6 +1201,13 @@ exports.getRequsetSearch = async (req, reply) => {
 };
 
 // get for user
+/**
+ * Retrieve request user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getRequestUser = async (req, reply) => {
   try {
     // var page = parseInt(req.query.page, 10);
@@ -1235,6 +1242,13 @@ exports.getRequestUser = async (req, reply) => {
 };
 
 //get single request
+/**
+ * Retrieve single request.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSingleRequest = async (req, reply) => {
   try {
     const _requests = await requests
