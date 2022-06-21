@@ -1269,6 +1269,13 @@ exports.getSingleRequest = async (req, reply) => {
 };
 
 //get single request
+/**
+ * Retrieve last request.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getLastRequest = async (req, reply) => {
   try {
     var totalPayment = 0;
@@ -1301,6 +1308,13 @@ exports.getLastRequest = async (req, reply) => {
 };
 
 //get active request for user
+/**
+ * Retrieve active request user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getActiveRequestUser = async (req, reply) => {
   try {
     var result = await requests
