@@ -1335,6 +1335,13 @@ exports.getActiveRequestUser = async (req, reply) => {
 };
 
 // reports for history
+/**
+ * Build the history report.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.rpt_history = async (req, reply) => {
   try {
     var query = {};
@@ -1419,6 +1426,13 @@ exports.rpt_history = async (req, reply) => {
 };
 
 // reports for funder
+/**
+ * Build the funder report.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.rpt_funder = async (req, reply) => {
   try {
     var query = {};
