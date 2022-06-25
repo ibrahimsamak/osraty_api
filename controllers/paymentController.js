@@ -1518,6 +1518,13 @@ exports.rpt_funder = async (req, reply) => {
 };
 
 // reports for funder excel
+/**
+ * Build the funder excel report.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.rpt_funder_excel = async (req, reply) => {
   try {
     var query = {};
@@ -1592,6 +1599,13 @@ exports.rpt_funder_excel = async (req, reply) => {
 };
 
 // reports for beneficiary
+/**
+ * Build the beneficiary report.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.rpt_beneficiary = async (req, reply) => {
   try {
     var query = {};
