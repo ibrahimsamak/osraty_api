@@ -1830,6 +1830,13 @@ exports.rpt_request = async (req, reply) => {
 };
 
 // satistics
+/**
+ * Retrieve method for.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getMethodFor = async (req, reply) => {
   try {
     var company_arr = [];
@@ -1931,6 +1938,13 @@ exports.getMethodFor = async (req, reply) => {
   }
 };
 
+/**
+ * Retrieve motst method for.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getMotstMethodFor = async (req, reply) => {
   try {
     var products = [];
@@ -1964,6 +1978,13 @@ exports.getMotstMethodFor = async (req, reply) => {
   }
 };
 
+/**
+ * Retrieve motst method type.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getMotstMethodType = async (req, reply) => {
   try {
     var products = [];
