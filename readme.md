@@ -81,7 +81,3 @@ With the server running, open:
 ```
 http://localhost:3000/documentation
 ```
-
-## License
-
-ISC
