@@ -2126,6 +2126,13 @@ exports.getAdminsPerYear = async (req, reply) => {
 };
 
 //الوارد
+/**
+ * Payment per year.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.PaymentPerYear = async (req, reply) => {
   try {
     const monthNames = [
@@ -2199,6 +2206,13 @@ exports.PaymentPerYear = async (req, reply) => {
 };
 
 //الصادر
+/**
+ * Payment per year2.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.PaymentPerYear2 = async (req, reply) => {
   try {
     const monthNames = [
