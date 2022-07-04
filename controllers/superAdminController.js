@@ -8,6 +8,13 @@ const util = require('util');
 const { SuperAdmin } = require('../models/superAdmin')
 
 // Get all Admins
+/**
+ * Retrieve admins.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getAdmins = async (req, reply) => {
     try {
         const SuperAdmins = await SuperAdmin.find().sort({ _id: -1 });
@@ -25,6 +32,13 @@ exports.getAdmins = async (req, reply) => {
 }
 
 // Get single Admin by ID
+/**
+ * Retrieve single admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getSingleAdmin = async (req, reply) => {
     try {
         const SuperAdmins = await SuperAdmin.findById((req.params.id))
