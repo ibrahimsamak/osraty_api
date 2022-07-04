@@ -2019,6 +2019,13 @@ exports.getMotstMethodType = async (req, reply) => {
 };
 
 // تسجيل المستفيدين
+/**
+ * Retrieve users per year.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getUsersPerYear = async (req, reply) => {
   try {
     const monthNames = [
@@ -2065,6 +2072,13 @@ exports.getUsersPerYear = async (req, reply) => {
   }
 };
 // تسجيل المتبرعين
+/**
+ * Retrieve admins per year.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getAdminsPerYear = async (req, reply) => {
   try {
     const monthNames = [
