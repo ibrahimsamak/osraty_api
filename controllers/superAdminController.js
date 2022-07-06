@@ -57,6 +57,13 @@ exports.getSingleAdmin = async (req, reply) => {
 }
 
 // Add a new Admin
+/**
+ * Create admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addAdmin = async (req, reply) => {
     try {
         let Admins = new SuperAdmin({
@@ -87,6 +94,13 @@ exports.addAdmin = async (req, reply) => {
 }
 
 //login
+/**
+ * Authenticate.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.login = async (req, reply) => {
     try {
 
