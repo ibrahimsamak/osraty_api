@@ -25,6 +25,9 @@ fastify.register(require('fastify-formbody'))
 fastify.register(require('fastify-file-upload'))
 fastify.register(require('fastify-cors'), {})
 
+const paymentController = require('./controllers/paymentController')
+
+
 // Connect to DB
 mongoose.connect('mongodb+srv://dbuser:dbuser123@cluster0-khlix.mongodb.net/community', { useNewUrlParser: true })
   .then(() => ('connect to db'))
@@ -37,6 +40,8 @@ routes.forEach((route, index) => {
 
 // Run the server!
 const start = async () => {
+  paymentController.reminderMonthlyJob();
+  paymentController.reminderYearlyJob();
   // try {
   // if (cluster.isMaster) {
   //   for (var i = 0; i < numCPUs; i++) {

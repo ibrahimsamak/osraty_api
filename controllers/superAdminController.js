@@ -17,7 +17,8 @@ exports.getAdmins = async (req, reply) => {
             message: 'return succssfully',
             items: SuperAdmins
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -34,7 +35,8 @@ exports.getSingleAdmin = async (req, reply) => {
             message: 'تمت العملية بنجاح',
             items: SuperAdmins
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -45,7 +47,7 @@ exports.addAdmin = async (req, reply) => {
     try {
         let Admins = new SuperAdmin({
             full_name: req.body.full_name,
-            email: req.body.email,
+            email: String(req.body.email).toLowerCase(),
             password: req.body.password,
             phone_number: req.body.phone_number,
             roles: req.body.roles,
@@ -62,7 +64,8 @@ exports.addAdmin = async (req, reply) => {
             message: 'تمت العملية بنجاح',
             items: rs
         }
-        return response
+        reply.send(response)
+
 
     } catch (err) {
         throw boom.boomify(err)
@@ -73,16 +76,24 @@ exports.addAdmin = async (req, reply) => {
 exports.login = async (req, reply) => {
     try {
 
-        const Admins = await SuperAdmin.findOne({ $and: [{ email: req.body.email }, { password: req.body.password }] })
+        const Admins = await SuperAdmin.findOne({ $and: [{ email: String(req.body.email).toLowerCase() }, { password: req.body.password }] })
 
         if (Admins) {
+             let newAdmin =  await SuperAdmin.findByIdAndUpdate((Admins._id), {
+                token: jwt.sign({ _id: Admins._id }, config.get('jwtPrivateKey'), {
+                    expiresIn: '365d'
+                }),
+            }, { new: true })
+
             const response = {
                 status_code: 200,
                 status: true,
                 message: 'return succssfully',
-                items: Admins
+                items: newAdmin
             }
-            return response
+            reply.send(response)
+            return
+
         } else {
             const response = {
                 status_code: 404,
@@ -90,7 +101,8 @@ exports.login = async (req, reply) => {
                 message: 'return succssfully',
                 items: null
             }
-            return response
+            reply.send(response)
+
         }
     } catch (err) {
         throw boom.boomify(err)
@@ -112,7 +124,8 @@ exports.refreshToken = async (req, reply) => {
                 message: 'حدث خطأ الرجاء المحاولة مرة اخرى',
                 items: []
             }
-            return response
+            reply.send(response)
+
         }
         else {
             const response = {
@@ -121,7 +134,8 @@ exports.refreshToken = async (req, reply) => {
                 message: '',
                 items: user
             }
-            return response
+            reply.send(response)
+
         }
     } catch (err) {
         throw boom.boomify(err)
@@ -137,7 +151,8 @@ exports.deleteAdmin = async (req, reply) => {
         message: 'تمت العملية بنجاح',
         items: []
     }
-    return response
+    reply.send(response)
+
 
 }
 
@@ -146,7 +161,7 @@ exports.updateAdmin = async (req, reply) => {
     try {
         const Admins = await SuperAdmin.findByIdAndUpdate((req.params.id), {
             full_name: req.body.full_name,
-            email: req.body.email,
+            email: String(req.body.email).toLowerCase(),
             password: req.body.password,
             phone_number: req.body.phone_number,
             roles: req.body.roles,
@@ -159,7 +174,8 @@ exports.updateAdmin = async (req, reply) => {
             message: 'return succssfully',
             items: Admins
         }
-        return response
+        reply.send(response)
+
 
     } catch (err) {
         throw boom.boomify(err)
@@ -182,7 +198,8 @@ exports.logout = async (req, reply) => {
                 message: 'حدث خطأ الرجاء المحاولة مرة اخرى',
                 items: []
             }
-            return response
+            reply.send(response)
+
         }
         else {
             const response = {
@@ -191,7 +208,8 @@ exports.logout = async (req, reply) => {
                 message: 'تم تسجيل الخروج بنجاح',
                 items: user
             }
-            return response
+            reply.send(response)
+
         }
     } catch (err) {
         throw boom.boomify(err)

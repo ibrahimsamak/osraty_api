@@ -61,11 +61,21 @@ const RequestSchema = mongoose.Schema({
         type: String
     },
     other:{
-        type:String
+        type:String,
+        default:""
     },
     type: {
         type: mongoose.Schema.Types.ObjectId, ref: 'paymentfors'
-    }
+    },
+    other_file1:{
+        type:String
+    },
+    other_file2:{
+        type:String
+    },
+    other_file3:{
+        type:String
+    },
 }, { versionKey: false });
 
 const RequestApproveSchema = mongoose.Schema({
@@ -81,43 +91,35 @@ const RequestApproveSchema = mongoose.Schema({
 }, { versionKey: false });
 
 const BankSchema = mongoose.Schema({
-    bank_name: {
-        type: String
-    },
-    branch_ar: {
-        type: String
-    },
-    branch_en: {
-        type: String
-    },
-    name_ar: {
-        type: String
-    },
-    name_en: {
-        type: String
-    },
-    nationality_ar: {
-        type: String
-    },
-    nationality_en: {
-        type: String
-    },
-    id_no: {
-        type: String
-    },
-    account_no: {
-        type: String
-    },
-    iban: {
-        type: String
-    },
+
+    // branch_ar: {
+    //     type: String
+    // },
+    // branch_en: {
+    //     type: String
+    // },
+    // name_ar: {
+    //     type: String
+    // },
+    // name_en: {
+    //     type: String
+    // },
+    // nationality_ar: {
+    //     type: String
+    // },
+    // nationality_en: {
+    //     type: String
+    // },
+    // id_no: {
+    //     type: String
+    // },
+ 
     type: {
         type: String
     },
     user_id: {
         type: String
     }
-
 }, { versionKey: false });
 
 RequestSchema.plugin(mongooseAggregatePaginate);

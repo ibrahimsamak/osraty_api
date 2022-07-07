@@ -19,6 +19,10 @@ const paymentMethodSchema = mongoose.Schema({
   },
   details: {
     type: String
+  },
+  type:{
+    type:String,
+    enum:["once","month","year"]
   }
 }, { versionKey: false });
 
@@ -81,6 +85,7 @@ const category = mongoose.model('category', categorySchema);
 const paymentFor = mongoose.model('paymentfors', categorySchema);
 const loans = mongoose.model('loans', categorySchema);
 const StaticPage = mongoose.model('staticpages', StaticPageSchema);
+const BankAccount = mongoose.model('bank', StaticPageSchema);
 const ContactOption = mongoose.model('contactoptions', ContactOptionSchema);
 const Jobs = mongoose.model('jobs', categorySchema);
 const Settings = mongoose.model('settings', settingsSchema);
@@ -96,4 +101,5 @@ exports.ContactOption = ContactOption;
 exports.jobs = Jobs;
 exports.settings = Settings;
 exports.bankfiles = bankfiles;
+exports.BankAccount = BankAccount;
 exports.getCurrentDateTime = getCurrentDateTime;

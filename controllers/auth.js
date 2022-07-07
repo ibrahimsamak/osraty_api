@@ -39,7 +39,7 @@ exports.getToken = async (request, reply, done) => {
         done(response);
       }
     } else {
-      done();
+      //done();
     }
   } catch (ex) {
     reply.code(400);

@@ -6,6 +6,7 @@ const adminController = require("../controllers/adminController");
 const superAdminController = require("../controllers/superAdminController");
 const newsController = require("../controllers/newsController");
 const paymentController = require("../controllers/paymentController");
+const favoriteController = require("../controllers/favoriteController");
 const auth = require("../controllers/auth");
 
 const fastify = require("fastify")({
@@ -212,7 +213,11 @@ const routes = [
     beforeHandler: [auth.getToken],
     handler: constantController.deleteJobs
   },
-
+  {
+    method: "GET",
+    url: "/api/settings",
+    handler: constantController.getAllSettings
+  },
   {
     method: "GET",
     url: "/api/constant",
@@ -225,9 +230,21 @@ const routes = [
   },
   {
     method: "GET",
+    url: "/api/bankaccount",
+    handler: constantController.getBankAccount
+  },
+
+  {
+    method: "GET",
     url: "/api/staticpage/:id",
     handler: constantController.getSingleStatic
   },
+  {
+    method: "GET",
+    url: "/api/bankaccount/:id",
+    handler: constantController.getSingleBankAccount
+  },
+
   {
     method: "POST",
     url: "/api/staticpage",
@@ -241,12 +258,23 @@ const routes = [
     handler: constantController.updateStatic
   },
   {
+    method: "PUT",
+    url: "/api/bankaccount/:id",
+    beforeHandler: [auth.getToken],
+    handler: constantController.updateBankAccount
+  },
+  {
     method: "POST",
     url: "/api/staticpage/:id",
     beforeHandler: [auth.getToken],
     handler: constantController.deleteStatic
   },
-
+  {
+    method: "POST",
+    url: "/api/bankaccount/:id",
+    beforeHandler: [auth.getToken],
+    handler: constantController.deleteBank
+  },
   {
     method: "GET",
     url: "/api/contact",
@@ -305,7 +333,37 @@ const routes = [
     beforeHandler: [auth.getToken],
     handler: newsController.updateGoing
   },
-
+  {
+    method: "GET",
+    url: "/api/atricles",
+    beforeHandler: [auth.getToken],
+    handler: newsController.getArticles
+  },
+  {
+    method: "GET",
+    url: "/api/favorite",
+    beforeHandler: [auth.getToken],
+    handler: favoriteController.getFavoriteByUserId
+  },
+  {
+    method: "POST",
+    url: "/api/favorite",
+    beforeHandler: [auth.getToken],
+    handler: favoriteController.addDeleteFavorite
+  },
+  {
+    method: "GET",
+    url: "/api/comment",
+    handler: newsController.getComment
+  },
+  {
+    method: "POST",
+    url: "/api/comment",
+    beforeHandler: [auth.getToken],
+    handler: newsController.addComment
+  },
+  
+  
   {
     method: "GET",
     url: "/api/users",
@@ -463,7 +521,7 @@ const routes = [
   {
     method: "POST",
     url: "/api/Payment",
-    beforeHandler: [auth.getToken],
+    // beforeHandler: [auth.getToken],
     handler: paymentController.addPayment
   },
   {
@@ -471,6 +529,12 @@ const routes = [
     url: "/api/verfiyPayment",
     beforeHandler: [auth.getToken],
     handler: paymentController.verfiyPayment
+  },
+  {
+    method: "POST",
+    url: "/api/approvePaymentByUser",
+    beforeHandler: [auth.getToken],
+    handler: paymentController.approvePaymentByUser
   },
   {
     method: "POST",
@@ -512,7 +576,7 @@ const routes = [
   {
     method: "POST",
     url: "/api/Request",
-    beforeHandler: [auth.getToken],
+    // beforeHandler: [auth.getToken],
     handler: paymentController.addRequest
   },
   {
@@ -579,9 +643,21 @@ const routes = [
   },
   {
     method: "POST",
+    url: "/api/rpt_funder_excel",
+    beforeHandler: [auth.getToken],
+    handler: paymentController.rpt_funder_excel
+  },
+  {
+    method: "POST",
     url: "/api/rpt_beneficiary",
     beforeHandler: [auth.getToken],
     handler: paymentController.rpt_beneficiary
+  },
+  {
+    method: "POST",
+    url: "/api/rpt_beneficiary_excel",
+    beforeHandler: [auth.getToken],
+    handler: paymentController.rpt_beneficiary_excel
   },
   {
     method: "POST",

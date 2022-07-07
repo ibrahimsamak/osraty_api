@@ -15,14 +15,15 @@ const { Users } = require("../models/User");
 const { Admins } = require("../models/Admin");
 const { encryptPassword } = require("../utils/utils");
 const { getCurrentDateTime, bankfiles } = require("../models/Constant");
+const { bankDetails } = require("../models/Payment");
 
 var transporter = nodemailer.createTransport({
-  host: "smtp.office365.com",
+  host: "server.alhaneny.net",
   port: 587,
   secure: false,
   auth: {
     user: "info@algoshayan.com",
-    pass: "Nadia@1385"
+    pass: "Ibrahim@0503260400"
   }
 });
 
@@ -37,6 +38,22 @@ function makeid() {
   return text;
 }
 
+async function uploadImages(img) {
+  return new Promise(function (resolve, reject) {
+      cloudinary.v2.uploader.upload('./uploads/' + img,
+          function (error, result) {
+              if (error) {
+                  reject(error);
+              } else {
+                  console.log(result, error)
+                  img = result['url']
+                  resolve(img);
+              }
+          });
+  });
+
+}
+
 // Get all Users
 exports.getUsers = async (req, reply) => {
   try {
@@ -45,43 +62,39 @@ exports.getUsers = async (req, reply) => {
       var limit = parseInt(req.query.limit, 10);
 
       const total = await Users.find().count();
-      const _Users = await Users.find()
+      const result = await Users.find()
         .populate("payment_for")
         .sort({ _id: -1 })
         .skip(page * limit)
         .limit(limit)
-        .exec(function(err, result) {
-          const response = {
-            items: result,
-            status_code: 200,
-            message: "returned successfully",
-            pagenation: {
-              size: result.length,
-              totalElements: total,
-              totalPages: Math.floor(total / limit),
-              pageNumber: page
-            }
-          };
-          reply.send(response);
-        });
+        const response = {
+          items: result,
+          status_code: 200,
+          message: "returned successfully",
+          pagenation: {
+            size: result.length,
+            totalElements: total,
+            totalPages: Math.floor(total / limit),
+            pageNumber: page
+          }
+        };
+        reply.send(response);
     } else {
-      await Users.find()
+      var result = await Users.find()
         .populate("payment_for")
         .sort({ _id: -1 })
-        .exec(function(err, result) {
-          const response = {
-            items: result,
-            status_code: 200,
-            message: "returned successfully",
-            pagenation: {
-              size: 0,
-              totalElements: 0,
-              totalPages: 0,
-              pageNumber: 0
-            }
-          };
-          reply.send(response);
-        });
+        const response = {
+          items: result,
+          status_code: 200,
+          message: "returned successfully",
+          pagenation: {
+            size: 0,
+            totalElements: 0,
+            totalPages: 0,
+            pageNumber: 0
+          }
+        };
+        reply.send(response);
     }
   } catch (err) {
     throw boom.boomify(err);
@@ -99,7 +112,7 @@ exports.getUsersSearch = async (req, reply) => {
         { Id_no: { $regex: req.body.Id_no, $options: "i" } }
       ]
     }).count();
-    await Users.find({
+    var result = await Users.find({
       $or: [
         { phone_number: { $regex: req.body.phone_number, $options: "i" } },
         { full_name: { $regex: req.body.full_name, $options: "i" } },
@@ -110,20 +123,19 @@ exports.getUsersSearch = async (req, reply) => {
       .sort({ _id: -1 })
       .skip(page * limit)
       .limit(limit)
-      .exec(function(err, result) {
-        const response = {
-          items: result,
-          status_code: 200,
-          message: "returned successfully",
-          pagenation: {
-            size: result.length,
-            totalElements: total,
-            totalPages: Math.floor(total / limit),
-            pageNumber: page
-          }
-        };
-        reply.send(response);
-      });
+      
+      const response = {
+        items: result,
+        status_code: 200,
+        message: "returned successfully",
+        pagenation: {
+          size: result.length,
+          totalElements: total,
+          totalPages: Math.floor(total / limit),
+          pageNumber: page
+        }
+      };
+      reply.send(response);
   } catch (err) {
     throw boom.boomify(err);
   }
@@ -140,7 +152,7 @@ exports.getSingleUser = async (req, reply) => {
       message: "تمت العملية بنجاح",
       items: _Users
     };
-    return response;
+    reply.send(response)
   } catch (err) {
     throw boom.boomify(err);
   }
@@ -150,10 +162,10 @@ exports.getSingleUser = async (req, reply) => {
 exports.addUser = async (req, reply) => {
   try {
     const pervAdminEmail = await Admins.findOne({
-      $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }]
+      $or: [{ email: String(req.body.email).toLowerCase() }, { phone_number: req.body.phone_number }]
     }).lean();
     const pervUserEmail = await Users.findOne({
-      $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }]
+      $or: [{ email:  String(req.body.email).toLowerCase() }, { phone_number: req.body.phone_number }]
     }).lean();
     if (pervAdminEmail) {
       // emeail is exsits
@@ -163,7 +175,8 @@ exports.addUser = async (req, reply) => {
         message: "البريد الالكتروني او رقم الجوال موجود مسبقا",
         items: null
       };
-      return response;
+      reply.send(response)
+      return
     } else if (pervUserEmail) {
       // emeail is exsits
       const response = {
@@ -172,17 +185,22 @@ exports.addUser = async (req, reply) => {
         message: "البريد الالكتروني او رقم الجوال موجود مسبقا",
         items: null
       };
-      return response;
+      reply.send(response)
+      return
     } else {
       if (req.body.user_type == "user") {
         let _Users = new Users({
           full_name: req.body.full_name,
-          email: req.body.email,
+          email:  String(req.body.email).toLowerCase(),
           password: encryptPassword(req.body.password),
           phone_number: req.body.phone_number,
           Id_no: req.body.Id_no,
           fcmToken: req.body.fcmToken,
-          user_type: req.body.user_type
+          user_type: req.body.user_type,
+          gender: req.body.gender,
+          payment_for: null,
+          isActivate: true,
+          isActivePayment:true
         });
         let rs = await _Users.save();
         let user = await Users.findByIdAndUpdate(
@@ -195,51 +213,51 @@ exports.addUser = async (req, reply) => {
                 expiresIn: "365d"
               }
             ),
-            gender: req.body.gender,
-            social_status: req.body.social_status,
-            has_children: req.body.has_children,
-            children_no: req.body.children_no,
+            // social_status: req.body.social_status,
+            // has_children: req.body.has_children,
+            // children_no: req.body.children_no,
             createAt: getCurrentDateTime(),
             isBlock: false,
-            isWork: req.body.isWork,
-            work_type: req.body.work_type,
-            house_type: req.body.house_type,
-            income: req.body.income,
-            isObligation: req.body.isObligation,
-            Obligation: req.body.Obligation,
-            number_of_dependents: req.body.number_of_dependents,
-            benefit_no: req.body.benefit_no,
-            payment_for_no: req.body.payment_for_no,
-            notes: req.body.notes,
-            isActivate: req.body.isActivate,
-            payment_for: req.body.payment_for,
-            isActivePayment: false
+            // isWork: req.body.isWork,
+            // work_type: req.body.work_type,
+            // house_type: req.body.house_type,
+            // income: req.body.income,
+            // isObligation: req.body.isObligation,
+            // Obligation: req.body.Obligation,
+            // number_of_dependents: req.body.number_of_dependents,
+            // benefit_no: req.body.benefit_no,
+            // payment_for_no: req.body.payment_for_no,
+            // notes: req.body.notes,
+            // isActivate: req.body.isActivate,
+            // payment_for: req.body.payment_for,
+            // isActivePayment: false
           },
           { new: true }
         );
-        const files = await bankfiles.find({ file_name: "وثيقة المستفيد" });
+        // const files = await bankfiles.find({ file_name: "وثيقة المستفيد" });
 
         const response = {
           status_code: 200,
           status: true,
           message: "تمت العملية بنجاح",
           items: user,
-          files: files
+          // files: files
         };
-        return response;
+        reply.send(response)
+        return
       } else {
         let _Admins = new Admins({
           full_name: req.body.full_name,
-          email: req.body.email,
+          email:  String(req.body.email).toLowerCase(),
           password: encryptPassword(req.body.password),
           phone_number: req.body.phone_number,
           Id_no: req.body.Id_no,
           fcmToken: req.body.fcmToken,
-          user_type: req.body.user_type
+          user_type: req.body.user_type,
         });
 
         let rs = await _Admins.save();
-        const files = await bankfiles.find({ file_name: "وثيقة المتبرع" });
+        // const files = await bankfiles.find({ file_name: "وثيقة المتبرع" });
 
         let admin = await Admins.findByIdAndUpdate(
           rs._id,
@@ -249,7 +267,7 @@ exports.addUser = async (req, reply) => {
             ammount: req.body.ammount,
             paymentMethod_id: req.body.paymentMethod_id,
             type: req.body.type,
-            isActivePayment: false,
+            isActivePayment: true,
             token: jwt.sign(
               { _id: rs._id, user_type: req.body.user_type },
               config.get("jwtPrivateKey"),
@@ -265,9 +283,10 @@ exports.addUser = async (req, reply) => {
           status: true,
           message: "تمت العملية بنجاح",
           items: admin,
-          files: files
+          // files: files
         };
-        return response;
+        reply.send(response)
+        return
       }
     }
   } catch (err) {
@@ -291,7 +310,8 @@ exports.BlockeUser = async (req, reply) => {
     message: "تمت العملية بنجاح",
     items: _Users
   };
-  return response;
+         reply.send(response)
+
 };
 
 // activate User
@@ -310,33 +330,143 @@ exports.activateUser = async (req, reply) => {
     message: "تمت العملية بنجاح",
     items: _Users
   };
-  return response;
+         reply.send(response)
+
 };
 
 // Update an existing User
 exports.updateUser = async (req, reply) => {
   try {
+    if (req.raw.files) {
+      const files = req.raw.files
+      let fileArr = []
+      for (let key in files) {
+          fileArr.push({
+              name: files[key].name,
+              mimetype: files[key].mimetype
+          })
+      }
+      var data = new Buffer(files.id_file.data);
+      fs.writeFile('./uploads/' + files.id_file.name, data, 'binary', function (err) {
+          if (err) {
+              console.log("There was an error writing the image")
+          }
+          else {
+              console.log("The sheel file was written")
+          }
+      });
+
+      let id_file = '';
+      await uploadImages(files.id_file.name).then((x) => {
+        id_file = x;
+      });
+
+      var data2 = new Buffer(files.iban_file.data);
+      fs.writeFile('./uploads/' + files.iban_file.name, data2, 'binary', function (err) {
+          if (err) {
+              console.log("There was an error writing the image")
+          }
+          else {
+              console.log("The sheel file was written")
+          }
+      });
+
+      let iban_file = '';
+      await uploadImages(files.iban_file.name).then((x) => {
+        iban_file = x;
+      });
+
+      const _Users = await Users.findByIdAndUpdate(
+        req.params.id,
+        {
+          // gender: req.body.gender,
+          id_file:id_file,
+          social_status: req.raw.body.social_status,
+          has_children: req.raw.body.has_children,
+          children_no: req.raw.body.children_no,
+          createAt: getCurrentDateTime(),
+          isBlock: false,
+          isWork: req.raw.body.isWork,
+          work_type: req.raw.body.work_type,
+          house_type: req.raw.body.house_type,
+          income: req.raw.body.income,
+          // isObligation: req.raw.body.isObligation,
+          Obligation: req.raw.body.Obligation,
+          number_of_dependents: req.raw.body.number_of_dependents,
+          // benefit_no: req.body.benefit_no,
+          // payment_for_no: req.raw.body.payment_for_no,
+          notes: req.raw.body.notes,
+          isActivate: req.raw.body.isActivate,
+          // payment_for: req.raw.body.payment_for
+          bank_name:req.raw.body.bank_name,
+          account_no:req.raw.body.account_no,
+          iban_file:iban_file,
+          iban:req.raw.body.iban
+        },
+        { new: true }
+      );
+  
+      // const _bankDetails = await bankDetails.findOne({ user_id: req.params.id });
+      // if(_bankDetails){
+      //   //update
+      //    await bankDetails.findByIdAndUpdate(
+      //     _bankDetails._id,
+      //     {
+      //       bank_name:req.raw.body.bank_name,
+      //       account_no:req.raw.body.account_no,
+      //       type:"user",
+      //       user_id:req.params.id,
+      //       iban_file:iban_file,
+      //       iban:req.raw.body.iban
+      //     },
+      //     { new: true }
+      //    );
+      // }else{
+      //   //add
+      //   let r = new bankDetails({
+      //     bank_name:req.raw.body.bank_name,
+      //     account_no:req.raw.body.account_no,
+      //     type:"user",
+      //     user_id:req.params.id,
+      //     iban_file:iban_file,
+      //     iban:req.raw.body.iban
+      //   });
+      //    await r.save();
+      // }
+
+      const response = {
+        status_code: 200,
+        status: true,
+        message: "تمت العملية بنجاح",
+        items: _Users
+      };
+      reply.send(response)
+
+  }else{
     const _Users = await Users.findByIdAndUpdate(
       req.params.id,
       {
-        gender: req.body.gender,
-        social_status: req.body.social_status,
-        has_children: req.body.has_children,
-        children_no: req.body.children_no,
+        // gender: req.body.gender,
+        social_status: req.raw.body.social_status,
+        has_children: req.raw.body.has_children,
+        children_no: req.raw.body.children_no,
         createAt: getCurrentDateTime(),
         isBlock: false,
-        isWork: req.body.isWork,
-        work_type: req.body.work_type,
-        house_type: req.body.house_type,
-        income: req.body.income,
-        isObligation: req.body.isObligation,
-        Obligation: req.body.Obligation,
-        number_of_dependents: req.body.number_of_dependents,
-        benefit_no: req.body.benefit_no,
-        payment_for_no: req.body.payment_for_no,
-        notes: req.body.notes,
-        isActivate: req.body.isActivate,
-        payment_for: req.body.payment_for
+        isWork: req.raw.body.isWork,
+        work_type: req.raw.body.work_type,
+        house_type: req.raw.body.house_type,
+        income: req.raw.body.income,
+        // isObligation: req.raw.body.isObligation,
+        Obligation: req.raw.body.Obligation,
+        number_of_dependents: req.raw.body.number_of_dependents,
+        // benefit_no: req.body.benefit_no,
+        // payment_for_no: req.raw.body.payment_for_no,
+        notes: req.raw.body.notes,
+        isActivate: req.raw.body.isActivate,
+        // payment_for: req.raw.body.payment_for
+        bank_name:req.raw.body.bank_name,
+        account_no:req.raw.body.account_no,
+        iban:req.raw.body.iban
       },
       { new: true }
     );
@@ -344,10 +474,14 @@ exports.updateUser = async (req, reply) => {
     const response = {
       status_code: 200,
       status: true,
-      message: "return succssfully",
+      message: "تمت العملية بنجاح",
       items: _Users
     };
-    return response;
+    reply.send(response)
+  }
+
+
+
   } catch (err) {
     throw boom.boomify(err);
   }
@@ -357,19 +491,26 @@ exports.updateUser = async (req, reply) => {
 exports.loginUser = async (req, reply) => {
   try {
     const pass = encryptPassword(req.body.password);
+    console.log(pass)
+
     const _Users = await Users.findOne({
-      $and: [{ email: req.body.email }, { password: pass }]
+      $and: [{ email:  String(req.body.email).toLowerCase() }, { password: pass }]
     });
     const _Admin = await Admins.findOne({
-      $and: [{ email: req.body.email }, { password: pass }]
+      $and: [{ email:  String(req.body.email).toLowerCase() }, { password: pass }]
     });
-
-    console.log(_Users);
+    console.log(_Admin)
     if (_Users) {
-      if (_Users.isActivePayment == true) {
-        await Users.findByIdAndUpdate(
+      // if (_Users.isActivePayment == true) {
+        let newUsers = await Users.findByIdAndUpdate(
           _Users._id,
           {
+            token: jwt.sign(
+              { _id: _Users._id, user_type: _Users.user_type },
+              config.get("jwtPrivateKey"),
+              {
+                expiresIn: "365d"
+            }),
             fcmToken: req.body.fcmToken
           },
           { new: true }
@@ -380,24 +521,31 @@ exports.loginUser = async (req, reply) => {
           status_code: 200,
           status: true,
           message: "return succssfully",
-          items: _Users
+          items: newUsers
         };
-        return response;
-      } else {
-        const response = {
-          type: "user",
-          status_code: 400,
-          status: false,
-          message: "عذرا .. الحساب قيد المراجعة",
-          items: _Users
-        };
-        return response;
-      }
+        reply.send(response)
+      // } 
+      // else {
+      //   const response = {
+      //     type: "user",
+      //     status_code: 400,
+      //     status: false,
+      //     message: "عذرا .. الحساب قيد المراجعة",
+      //     items: newUsers
+      //   };
+      //   reply.send(response)
+      // }
     } else if (_Admin) {
-      if (_Admin.isActivePayment == true) {
-        await Admins.findByIdAndUpdate(
+      // if (_Admin.isActivePayment == true) {
+        let newAdmins = await Admins.findByIdAndUpdate(
           _Admin._id,
           {
+            token: jwt.sign(
+              { _id: _Admin._id, user_type: _Admin.user_type },
+              config.get("jwtPrivateKey"),
+              {
+                expiresIn: "365d"
+            }),
             fcmToken: req.body.fcmToken
           },
           { new: true }
@@ -408,19 +556,21 @@ exports.loginUser = async (req, reply) => {
           status_code: 200,
           status: true,
           message: "return succssfully",
-          items: _Admin
+          items: newAdmins
         };
-        return response;
-      } else {
-        const response = {
-          type: "admin",
-          status_code: 400,
-          status: false,
-          message: "عذرا .. الحساب قيد المراجعة",
-          items: _Admin
-        };
-        return response;
-      }
+        reply.send(response)
+      // } 
+      // else {
+      //   const response = {
+      //     type: "admin",
+      //     status_code: 400,
+      //     status: false,
+      //     message: "عذرا .. الحساب قيد المراجعة",
+      //     items: _Admin
+      //   };
+      //  reply.send(response)
+
+      // }
     } else {
       const response = {
         status_code: 400,
@@ -428,7 +578,7 @@ exports.loginUser = async (req, reply) => {
         message: "خطأ في معلومات الدخول",
         items: null
       };
-      return response;
+      reply.send(response);
     }
   } catch (err) {
     throw boom.boomify(err);
@@ -438,12 +588,9 @@ exports.loginUser = async (req, reply) => {
 //forget password
 exports.forgetPassword = async (req, reply) => {
   try {
-    const _Users = await Users.findOne({
-      $and: [{ email: req.body.email }, { phone_number: req.body.phone_number }]
-    });
-    const _Admins = await Admins.findOne({
-      $and: [{ email: req.body.email }, { phone_number: req.body.phone_number }]
-    });
+    console.log(req.body)
+    const _Users = await Users.findOne({$and: [{ email: String(req.body.email).toLowerCase().trim() }, { phone_number: String(req.body.phone_number).trim() }]});
+    const _Admins = await Admins.findOne({$and: [{ email: String(req.body.email).toLowerCase().trim() }, { phone_number: String(req.body.phone_number).trim() }]});
     const _newPassword = makeid();
     const newPassword = encryptPassword(_newPassword);
     if (_Users) {
@@ -591,7 +738,7 @@ exports.forgetPassword = async (req, reply) => {
 
       var mailOptions = {
         from: '"صندوق الغشيان" <info@algoshayan.com>',
-        to: req.body.email,
+        to:  String(req.body.email).toLowerCase(),
         subject: "استعادة كلمة المرور",
         html: msg
       };
@@ -602,7 +749,8 @@ exports.forgetPassword = async (req, reply) => {
         message: "تم ارسال كلمة المرور الى البريد الالكتروني بنجاح",
         items: update
       };
-      return response;
+             reply.send(response)
+
     } else if (_Admins) {
       console.log(_Admins);
       const update = await Admins.findByIdAndUpdate(
@@ -748,7 +896,7 @@ exports.forgetPassword = async (req, reply) => {
 
       var mailOptions = {
         from: '"صندوق الغشيان" <info@algoshayan.com>',
-        to: req.body.email,
+        to:  String(req.body.email).toLowerCase(),
         subject: "استعادة كلمة المرور",
         html: msg
       };
@@ -759,7 +907,8 @@ exports.forgetPassword = async (req, reply) => {
         message: "تم ارسال كلمة المرور الى البريد الالكتروني بنجاح",
         items: update
       };
-      return response;
+             reply.send(response)
+
     } else {
       const response = {
         status_code: 404,
@@ -767,7 +916,7 @@ exports.forgetPassword = async (req, reply) => {
         message: "البريد الالكتروني غير مسجل لدينا",
         items: []
       };
-      return response;
+      reply.send(response)
     }
   } catch (err) {
     throw boom.boomify(err);
@@ -812,7 +961,8 @@ exports.resetPasswordUsers = async (req, reply) => {
       message: "تم تعديل كلمة المرور بنجاح",
       items: _user
     };
-    return response;
+           reply.send(response)
+
     // }
   } catch (err) {
     throw boom.boomify(err);
@@ -823,9 +973,9 @@ exports.resetPasswordUsers = async (req, reply) => {
 exports.resetEmailUsers = async (req, reply) => {
   try {
     const pervAdminEmail = await Admins.findOne({
-      email: req.body.email
+      email:  String(req.body.email).toLowerCase()
     }).lean();
-    const pervUserEmail = await Users.findOne({ email: req.body.email }).lean();
+    const pervUserEmail = await Users.findOne({ email:  String(req.body.email).toLowerCase() }).lean();
     if (pervAdminEmail) {
       // emeail is exsits
       const response = {
@@ -834,7 +984,8 @@ exports.resetEmailUsers = async (req, reply) => {
         message: "الايميل موجود مسبقا",
         items: null
       };
-      return response;
+             reply.send(response)
+
     } else if (pervUserEmail) {
       // emeail is exsits
       const response = {
@@ -843,12 +994,13 @@ exports.resetEmailUsers = async (req, reply) => {
         message: "الايميل موجود مسبقا",
         items: null
       };
-      return response;
+             reply.send(response)
+
     } else {
       const _user = await Users.findByIdAndUpdate(
         req.params.id,
         {
-          email: req.body.email
+          email:  String(req.body.email).toLowerCase()
         },
         { new: true }
       );
@@ -858,7 +1010,8 @@ exports.resetEmailUsers = async (req, reply) => {
         message: "تم تعديل البريد الالكتروني بنجاح",
         items: _user
       };
-      return response;
+             reply.send(response)
+
     }
   } catch (err) {
     throw boom.boomify(err);

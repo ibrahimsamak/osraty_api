@@ -1,4 +1,3 @@
 {
-  "jwtPrivateKey": "osraty_jwtPrivateKey",
-  "db": "db_osraty"
+  "jwtPrivateKey": "osraty_jwtPrivateKey"
 }

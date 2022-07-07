@@ -30,43 +30,39 @@ exports.getAdmins = async (req, reply) => {
             var limit = parseInt(req.query.limit, 10)
 
             const total = await Admins.find().count();
-            const _Users = await Admins.find()
+            const result = await Admins.find()
                 .populate('paymentMethod_id')
                 .sort({ _id: -1 })
                 .skip((page) * limit)
                 .limit(limit)
-                .exec(function (err, result) {
-                    const response = {
-                        items: result,
-                        status_code: 200,
-                        message: 'returned successfully',
-                        pagenation: {
-                            size: result.length,
-                            totalElements: total,
-                            totalPages: Math.floor(total / limit),
-                            pageNumber: page
-                        }
+                const response = {
+                    items: result,
+                    status_code: 200,
+                    message: 'returned successfully',
+                    pagenation: {
+                        size: result.length,
+                        totalElements: total,
+                        totalPages: Math.floor(total / limit),
+                        pageNumber: page
                     }
-                    reply.send(response)
-                });
+                }
+                reply.send(response)
         } else {
-            await Admins.find()
+            var result = await Admins.find()
                 .populate('paymentMethod_id')
-                .sort({ _id: -1 })
-                .exec(function (err, result) {
-                    const response = {
-                        items: result,
-                        status_code: 200,
-                        message: 'returned successfully',
-                        pagenation: {
-                            size: 0,
-                            totalElements: 0,
-                            totalPages: 0,
-                            pageNumber: 0
-                        }
+                .sort({ _id: -1 });
+                const response = {
+                    items: result,
+                    status_code: 200,
+                    message: 'returned successfully',
+                    pagenation: {
+                        size: 0,
+                        totalElements: 0,
+                        totalPages: 0,
+                        pageNumber: 0
                     }
-                    reply.send(response)
-                });
+                }
+                reply.send(response)
         }
     } catch (err) {
         throw boom.boomify(err)
@@ -80,25 +76,23 @@ exports.getUsersSearch = async (req, reply) => {
         var page = parseInt(req.query.page, 10)
         var limit = parseInt(req.query.limit, 10)
         const total = await Admins.find({ $or: [{ "phone_number": { "$regex": req.body.phone_number, "$options": "i" } }, { "Id_no": { "$regex": req.body.Id_no, "$options": "i" } }] }).count();
-        await Admins.find({ $or: [{ "phone_number": { "$regex": req.body.phone_number, "$options": "i" } }, { "full_name": { "$regex": req.body.full_name, "$options": "i" } }, { "Id_no": { "$regex": req.body.Id_no, "$options": "i" } }] })
+        var result  = await Admins.find({ $or: [{ "phone_number": { "$regex": req.body.phone_number, "$options": "i" } }, { "full_name": { "$regex": req.body.full_name, "$options": "i" } }, { "Id_no": { "$regex": req.body.Id_no, "$options": "i" } }] })
             .populate('paymentMethod_id')
             .sort({ _id: -1 })
             .skip((page) * limit)
             .limit(limit)
-            .exec(function (err, result) {
-                const response = {
-                    items: result,
-                    status_code: 200,
-                    message: 'returned successfully',
-                    pagenation: {
-                        size: result.length,
-                        totalElements: total,
-                        totalPages: Math.floor(total / limit),
-                        pageNumber: page
-                    }
+            const response = {
+                items: result,
+                status_code: 200,
+                message: 'returned successfully',
+                pagenation: {
+                    size: result.length,
+                    totalElements: total,
+                    totalPages: Math.floor(total / limit),
+                    pageNumber: page
                 }
-                reply.send(response)
-            });
+            }
+            reply.send(response)
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -116,7 +110,7 @@ exports.getSingleAdmins = async (req, reply) => {
             message: 'تمت العملية بنجاح',
             items: _Admins
         }
-        return response
+        reply.send(response)
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -125,8 +119,8 @@ exports.getSingleAdmins = async (req, reply) => {
 // Add a new Admins
 exports.addAdmins = async (req, reply) => {
     try {
-        const pervAdminEmail = await Admins.findOne({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
-        const pervUserEmail = await Users.findOne({ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }).lean()
+        const pervAdminEmail = await Admins.findOne({ $or: [{ email: String(req.body.email).toLowerCase() }, { phone_number: req.body.phone_number }] }).lean()
+        const pervUserEmail = await Users.findOne({ $or: [{ email: String(req.body.email).toLowerCase() }, { phone_number: req.body.phone_number }] }).lean()
         if (pervAdminEmail) {
             // emeail is exsits 
             const response = {
@@ -135,7 +129,8 @@ exports.addAdmins = async (req, reply) => {
                 message: 'البريد الالكتروني او رقم الجوال موجود مسبقا',
                 items: null
             }
-            return response
+            reply.send(response);
+            return
         } else if (pervUserEmail) {
             // emeail is exsits 
             const response = {
@@ -144,11 +139,12 @@ exports.addAdmins = async (req, reply) => {
                 message: 'البريد الالكتروني او رقم الجوال موجود مسبقا',
                 items: null
             }
-            return response
+            reply.send(response)
+            return
         } else {
             let _Admins = new Admins({
                 full_name: req.body.full_name,
-                email: req.body.email,
+                email: String(req.body.email).toLowerCase(),
                 password: encryptPassword(req.body.password),
                 phone_number: req.body.phone_number,
                 Id_no: req.body.Id_no,
@@ -168,7 +164,7 @@ exports.addAdmins = async (req, reply) => {
                 message: 'تمت العملية بنجاح',
                 items: _Adminss
             }
-            return response
+            reply.send(response)
         }
 
     } catch (err) {
@@ -188,7 +184,7 @@ exports.BlockeAdmins = async (req, reply) => {
         message: 'تمت العملية بنجاح',
         items: _Admins
     }
-    return response
+    reply.send(response)
 
 }
 
@@ -204,7 +200,7 @@ exports.activateAdmins = async (req, reply) => {
         message: 'تمت العملية بنجاح',
         items: _Admins
     }
-    return response
+    reply.send(response)
 
 }
 
@@ -225,7 +221,7 @@ exports.updateAdmins = async (req, reply) => {
             message: 'return succssfully',
             items: _Admins
         }
-        return response
+        reply.send(response)
 
     } catch (err) {
         throw boom.boomify(err)
@@ -236,20 +232,24 @@ exports.updateAdmins = async (req, reply) => {
 exports.loginAdmins = async (req, reply) => {
     try {
         const pass = encryptPassword(req.body.password)
-        const _Admins = await Admins.findOne({ $and: [{ $or: [{ email: req.body.email }, { phone_number: req.body.phone_number }] }, { password: pass }] })
+        const _Admins = await Admins.findOne({ $and: [{ email: String(req.body.email).toLowerCase() }, { password: pass }] })
 
         if (_Admins) {
-            await Admins.findByIdAndUpdate((_Admins._id), {
+           let newAdmin =  await Admins.findByIdAndUpdate((_Admins._id), {
                 fcmToken: req.body.fcmToken,
+                token: jwt.sign({ _id: _Admins._id }, config.get('jwtPrivateKey'), {
+                    expiresIn: '365d'
+                }),
             }, { new: true })
 
             const response = {
                 status_code: 200,
                 status: true,
                 message: 'return succssfully',
-                items: _Admins
+                items: newAdmin
             }
-            return response
+            reply.send(response)
+            return
         } else {
             const response = {
                 status_code: 400,
@@ -257,7 +257,7 @@ exports.loginAdmins = async (req, reply) => {
                 message: 'email or passord are incorret',
                 items: _Admins
             }
-            return response
+            reply.send(response)
         }
     } catch (err) {
         throw boom.boomify(err)
@@ -268,7 +268,7 @@ exports.loginAdmins = async (req, reply) => {
 //forget password
 exports.forgetPasswordAdmins = async (req, reply) => {
     try {
-        const _Users = await Admins.findOne({ $and: [{ email: req.body.email }, { phone_number: req.body.phone_number }] })
+        const _Users = await Admins.findOne({ $and: [{ email: String(req.body.email).toLowerCase() }, { phone_number: req.body.phone_number }] })
         if (_Users) {
             var newPassword = makeid();
             const update = await Admins.findByIdAndUpdate(_Users._id, { password: newPassword }, { new: true })
@@ -410,7 +410,7 @@ exports.forgetPasswordAdmins = async (req, reply) => {
 
             var mailOptions = {
                 from: '"Souqgaz" <no-reply@souqgaz.com>',
-                to: req.body.email,
+                to: String(req.body.email).toLowerCase(),
                 subject: 'Forget Password',
                 html: msg
             };
@@ -421,7 +421,7 @@ exports.forgetPasswordAdmins = async (req, reply) => {
                 message: 'تم ارسال كلمة المرور الى البريد الالكتروني بنجاح',
                 items: update
             }
-            return response
+            reply.send(response)
         } else {
             const response = {
                 status_code: 404,
@@ -429,7 +429,7 @@ exports.forgetPasswordAdmins = async (req, reply) => {
                 message: 'البريد الالكتروني غير مسجل لدينا',
                 items: []
             }
-            return response
+            reply.send(response)
         }
     } catch (err) {
         throw boom.boomify(err)
@@ -470,7 +470,7 @@ exports.resetPasswordAdmins = async (req, reply) => {
             message: 'return succssfully',
             items: _user
         }
-        return response
+        reply.send(response)
         // }
     } catch (err) {
         throw boom.boomify(err)
@@ -480,8 +480,8 @@ exports.resetPasswordAdmins = async (req, reply) => {
 //reset email
 exports.resetEmailAdmins = async (req, reply) => {
     try {
-        const pervAdminEmail = await Admins.findOne({ email: req.body.email }).lean()
-        const pervUserEmail = await Users.findOne({ email: req.body.email }).lean()
+        const pervAdminEmail = await Admins.findOne({ email: String(req.body.email).toLowerCase() }).lean()
+        const pervUserEmail = await Users.findOne({ email: String(req.body.email).toLowerCase() }).lean()
         console.log(pervUserEmail)
         console.log(pervAdminEmail)
         if (pervAdminEmail) {
@@ -492,7 +492,8 @@ exports.resetEmailAdmins = async (req, reply) => {
                 message: 'الايميل موجود مسبقا',
                 items: null
             }
-            return response
+            reply.send(response)
+            return
         } else if (pervUserEmail) {
             // emeail is exsits 
             const response = {
@@ -501,10 +502,11 @@ exports.resetEmailAdmins = async (req, reply) => {
                 message: 'الايميل موجود مسبقا',
                 items: null
             }
-            return response
+            reply.send(response)
+            return
         } else {
             const _user = await Admins.findByIdAndUpdate((req.body.id), {
-                email: req.body.email
+                email: String(req.body.email).toLowerCase()
             }, { new: true })
             const response = {
                 status_code: 200,
@@ -512,7 +514,7 @@ exports.resetEmailAdmins = async (req, reply) => {
                 message: 'return succssfully',
                 items: _user
             }
-            return response
+            reply.send(response)
         }
     } catch (err) {
         throw boom.boomify(err)

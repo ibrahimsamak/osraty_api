@@ -5,7 +5,7 @@ const fs = require('fs');
 
 
 // Get Data Models
-const { bankfiles, getCurrentDateTime, jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption } = require('../models/Constant')
+const { settings,bankfiles, getCurrentDateTime, jobs, categories, paymentMethods, paymentFors, loans, StaticPage, ContactOption, BankAccount } = require('../models/Constant')
 
 
 cloudinary.config({
@@ -31,6 +31,24 @@ async function uploadImages(img) {
 }
 
 // cPanel
+exports.getAllSettings = async (req, reply) => {
+    try {
+        const _settings = await settings.find().sort({ _id: -1 });
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: _settings,
+        }
+        reply.send(response)
+
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+
 exports.getAllConstants = async (req, reply) => {
     try {
         const staticpages = await StaticPage.find().sort({ _id: -1 });
@@ -44,7 +62,8 @@ exports.getAllConstants = async (req, reply) => {
             paymentfor: paymentfor,
             paymentMethod: paymentMethod
         }
-        return response
+        reply.send(response)
+
 
     } catch (err) {
         throw boom.boomify(err)
@@ -65,7 +84,8 @@ exports.addcategories = async (req, reply) => {
             message: 'return succssfully',
             items: rs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -83,7 +103,8 @@ exports.updatecategories = async (req, reply) => {
             message: 'return succssfully',
             items: _categories
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -99,7 +120,8 @@ exports.deletecategories = async (req, reply) => {
             message: 'return succssfully',
             items: []
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -114,7 +136,8 @@ exports.getcategories = async (req, reply) => {
             message: 'return succssfully',
             items: _categories
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -135,7 +158,8 @@ exports.addpaymentMethod = async (req, reply) => {
             message: 'return succssfully',
             items: rs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -154,7 +178,8 @@ exports.updatepaymentMethod = async (req, reply) => {
             message: 'return succssfully',
             items: _paymentMethods
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -170,7 +195,8 @@ exports.deletepaymentMethods = async (req, reply) => {
             message: 'return succssfully',
             items: []
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -185,7 +211,8 @@ exports.getpaymentMethods = async (req, reply) => {
             message: 'return succssfully',
             items: _paymentMethods
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -205,7 +232,8 @@ exports.addloans = async (req, reply) => {
             message: 'return succssfully',
             items: rs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -223,7 +251,8 @@ exports.updateloans = async (req, reply) => {
             message: 'return succssfully',
             items: _loans
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -239,7 +268,8 @@ exports.deleteloans = async (req, reply) => {
             message: 'return succssfully',
             items: []
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -254,7 +284,8 @@ exports.getloans = async (req, reply) => {
             message: 'return succssfully',
             items: _loans
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -274,7 +305,8 @@ exports.addJobs = async (req, reply) => {
             message: 'return succssfully',
             items: rs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -292,7 +324,8 @@ exports.updateJobs = async (req, reply) => {
             message: 'return succssfully',
             items: _jobs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -308,7 +341,8 @@ exports.deleteJobs = async (req, reply) => {
             message: 'return succssfully',
             items: []
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -323,7 +357,8 @@ exports.getJobs = async (req, reply) => {
             message: 'return succssfully',
             items: _jobs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -344,7 +379,8 @@ exports.addpaymentfor = async (req, reply) => {
             message: 'return succssfully',
             items: rs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -362,7 +398,8 @@ exports.updatepaymentFors = async (req, reply) => {
             message: 'return succssfully',
             items: _paymentFors
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -378,7 +415,8 @@ exports.deletepaymentFors = async (req, reply) => {
             message: 'return succssfully',
             items: []
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -393,7 +431,8 @@ exports.getpaymentfor = async (req, reply) => {
             message: 'return succssfully',
             items: _paymentFors
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -409,7 +448,8 @@ exports.getStaticPage = async (req, reply) => {
             message: 'return succssfully',
             items: staticpages
         }
-        return response
+        reply.send(response)
+
 
     } catch (err) {
         throw boom.boomify(err)
@@ -425,7 +465,8 @@ exports.getSingleStatic = async (req, reply) => {
             message: 'return succssfully',
             items: StaticPages
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -445,7 +486,8 @@ exports.addStatic = async (req, reply) => {
             message: 'return succssfully',
             items: rs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -462,7 +504,8 @@ exports.updateStatic = async (req, reply) => {
             message: 'return succssfully',
             items: staticpages
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -478,11 +521,83 @@ exports.deleteStatic = async (req, reply) => {
             message: 'return succssfully',
             items: []
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
 }
+
+
+
+exports.getBankAccount = async (req, reply) => {
+    try {
+        const _BankAccount = await BankAccount.find().sort({ _id: -1 });
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: _BankAccount
+        }
+        reply.send(response)
+
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.getSingleBankAccount = async (req, reply) => {
+    try {
+        const _BankAccount = await BankAccount.findById(req.params.id);
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: _BankAccount
+        }
+        reply.send(response)
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.updateBankAccount = async (req, reply) => {
+    try {
+        const _BankAccount = await BankAccount.findByIdAndUpdate((req.params.id), {
+            title: req.body.title, content: req.body.content
+        }, { new: true })
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: _BankAccount
+        }
+        reply.send(response)
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+exports.deleteBank = async (req, reply) => {
+    try {
+        const _BankAccount = await BankAccount.findByIdAndRemove(req.params.id);
+
+        const response = {
+            status_code: 200,
+            status: true,
+            message: 'return succssfully',
+            items: {}
+        }
+        reply.send(response)
+
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
 
 
 exports.getContact = async (req, reply) => {
@@ -490,24 +605,22 @@ exports.getContact = async (req, reply) => {
         var page = parseInt(req.query.page, 10)
         var limit = parseInt(req.query.limit, 10)
         const total = await ContactOption.find().count();
-        await ContactOption.find()
+        var result = await ContactOption.find()
             .sort({ _id: -1 })
             .skip((page) * limit)
             .limit(limit)
-            .exec(function (err, result) {
-                const response = {
-                    items: result,
-                    status_code: 200,
-                    message: 'returned successfully',
-                    pagenation: {
-                        size: result.length,
-                        totalElements: total,
-                        totalPages: Math.floor(total / limit),
-                        pageNumber: page
-                    }
+            const response = {
+                items: result,
+                status_code: 200,
+                message: 'returned successfully',
+                pagenation: {
+                    size: result.length,
+                    totalElements: total,
+                    totalPages: Math.floor(total / limit),
+                    pageNumber: page
                 }
-                reply.send(response)
-            });
+            }
+            reply.send(response)
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -518,24 +631,22 @@ exports.contactSearch = async (req, reply) => {
         var page = parseInt(req.query.page, 10)
         var limit = parseInt(req.query.limit, 10)
         const total = await ContactOption.find({ $or: [{ "name": { "$regex": req.body.name, "$options": "i" } }, { "title": { "$regex": req.body.title, "$options": "i" } }] }).count();
-        await ContactOption.find({ $or: [{ "name": { "$regex": req.body.name, "$options": "i" } }, { "title": { "$regex": req.body.title, "$options": "i" } }] })
+        var result = await ContactOption.find({ $or: [{ "name": { "$regex": req.body.name, "$options": "i" } }, { "title": { "$regex": req.body.title, "$options": "i" } }] })
             .sort({ _id: -1 })
             .skip((page) * limit)
             .limit(limit)
-            .exec(function (err, result) {
-                const response = {
-                    items: result,
-                    status_code: 200,
-                    message: 'returned successfully',
-                    pagenation: {
-                        size: result.length,
-                        totalElements: total,
-                        totalPages: Math.floor(total / limit),
-                        pageNumber: page
-                    }
+            const response = {
+                items: result,
+                status_code: 200,
+                message: 'returned successfully',
+                pagenation: {
+                    size: result.length,
+                    totalElements: total,
+                    totalPages: Math.floor(total / limit),
+                    pageNumber: page
                 }
-                reply.send(response)
-            });
+            }
+            reply.send(response)
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -547,7 +658,7 @@ exports.addContact = async (req, reply) => {
             name: req.body.name,
             title: req.body.title,
             message: req.body.message,
-            email: req.body.email,
+            email: String(req.body.email).toLowerCase(),
             createAt: getCurrentDateTime()
         });
 
@@ -559,7 +670,8 @@ exports.addContact = async (req, reply) => {
             message: 'تم ارسال رسالتك الى الادارة .. سيتم الرد عليكم عبر البريد الالكتروني في أقرب وقت',
             items: rs
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -574,7 +686,8 @@ exports.deleteContact = async (req, reply) => {
             message: 'return succssfully',
             items: []
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -590,7 +703,8 @@ exports.getFiles = async (req, reply) => {
             message: 'return succssfully',
             items: _bankfiles
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -605,7 +719,8 @@ exports.getSingleFiles = async (req, reply) => {
             message: 'return succssfully',
             items: _bankfiles
         }
-        return response
+        reply.send(response)
+
     } catch (err) {
         throw boom.boomify(err)
     }
@@ -692,7 +807,8 @@ exports.updateFile = async (req, reply) => {
                 message: 'return succssfully',
                 items: _bankfiles
             }
-            return response
+            reply.send(response)
+
 
         } else {
             const _bankfiles = await bankfiles.findByIdAndUpdate((req.params.id), {
@@ -705,7 +821,8 @@ exports.updateFile = async (req, reply) => {
                 message: 'return succssfully',
                 items: _bankfiles
             }
-            return response
+            reply.send(response)
+
         }
     } catch (err) {
         throw boom.boomify(err)

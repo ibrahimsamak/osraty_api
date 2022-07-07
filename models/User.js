@@ -86,7 +86,22 @@ const UserSchema = mongoose.Schema({
     },
     user_type:{
         type:String
-    }
+    },
+    id_file:{
+        type:String
+    },
+    bank_name:{
+        type:String
+    },
+    account_no:{
+        type:String
+    },
+    iban_file:{
+        type:String
+    },
+    iban:{
+        type:String
+    },
 }, { versionKey: false });
 
 const Users = mongoose.model('users', UserSchema);

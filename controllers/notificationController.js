@@ -6,31 +6,17 @@ const { Notifications } = require('../models/Notifications')
 // Get all notfications
 exports.getNotfications = async (req, reply) => {
   try {
-    var page = parseInt(req.query.page, 10)
-    var limit = parseInt(req.query.limit, 10)
-
     var user_id = req.params.id
-    const total = await Notifications.find({ user_id: user_id }).count();
-
-    await Notifications.find({ user_id: user_id })
+    var result = await Notifications.find({ user_id: user_id })
       .sort({ _id: -1 })
-      .skip((page) * limit)
-      .limit(limit)
-      .exec(function (err, result) {
-        const response = {
-          items: result,
-          status: true,
-          status_code: 200,
-          message: 'returned successfully',
-          pagenation: {
-            size: result.length,
-            totalElements: total,
-            totalPages: Math.floor(total / limit),
-            pageNumber: page
-          }
-        }
-        reply.send(response)
-      });
+      .limit(50)
+      const response = {
+        items: result,
+        status: true,
+        status_code: 200,
+        message: 'returned successfully',
+      }
+      reply.send(response)
 
   } catch (err) {
     throw boom.boomify(err)
@@ -50,7 +36,8 @@ exports.readNotifications = async (req, reply) => {
       message: 'تم تعديل حالة التنبيه بنجاح',
       items: _Notification
     }
-    return response
+    reply.send(response)
+
   } catch (err) {
     throw boom.boomify(err)
   }
