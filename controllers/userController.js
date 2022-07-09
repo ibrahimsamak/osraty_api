@@ -27,6 +27,11 @@ var transporter = nodemailer.createTransport({
   }
 });
 
+/**
+ * Generate a random 6-character alphanumeric identifier.
+ *
+ * @returns {string} The generated identifier.
+ */
 function makeid() {
   var text = "";
   var possible =
@@ -55,6 +60,13 @@ async function uploadImages(img) {
 }
 
 // Get all Users
+/**
+ * Retrieve users.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.getUsers = async (req, reply) => {
   try {
     if (req.query.page) {

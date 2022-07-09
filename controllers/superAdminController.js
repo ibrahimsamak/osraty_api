@@ -232,6 +232,13 @@ exports.updateAdmin = async (req, reply) => {
 }
 
 //logout
+/**
+ * Log out.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.logout = async (req, reply) => {
     try {
         const User_id = req.user._id
