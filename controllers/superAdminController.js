@@ -138,6 +138,13 @@ exports.login = async (req, reply) => {
 }
 
 // refresh token
+/**
+ * Refresh token.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.refreshToken = async (req, reply) => {
     try {
 
@@ -171,6 +178,13 @@ exports.refreshToken = async (req, reply) => {
 }
 
 // delete admin
+/**
+ * Remove admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.deleteAdmin = async (req, reply) => {
     const Admins = await SuperAdmin.findByIdAndRemove(req.params.id);
     const response = {
@@ -185,6 +199,13 @@ exports.deleteAdmin = async (req, reply) => {
 }
 
 // Update an existing Admin
+/**
+ * Update admin.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateAdmin = async (req, reply) => {
     try {
         const Admins = await SuperAdmin.findByIdAndUpdate((req.params.id), {
