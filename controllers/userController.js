@@ -185,6 +185,13 @@ exports.getSingleUser = async (req, reply) => {
 };
 
 // Add a new User
+/**
+ * Create user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.addUser = async (req, reply) => {
   try {
     const pervAdminEmail = await Admins.findOne({
@@ -321,6 +328,13 @@ exports.addUser = async (req, reply) => {
 };
 
 // delete User
+/**
+ * Block user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.BlockeUser = async (req, reply) => {
   const _Users = await Users.findByIdAndUpdate(
     req.params.id,
