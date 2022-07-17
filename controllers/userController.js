@@ -355,6 +355,13 @@ exports.BlockeUser = async (req, reply) => {
 };
 
 // activate User
+/**
+ * Activate user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.activateUser = async (req, reply) => {
   const _Users = await Users.findByIdAndUpdate(
     req.params.id,
@@ -375,6 +382,13 @@ exports.activateUser = async (req, reply) => {
 };
 
 // Update an existing User
+/**
+ * Update user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.updateUser = async (req, reply) => {
   try {
     if (req.raw.files) {
