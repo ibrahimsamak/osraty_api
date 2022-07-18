@@ -542,6 +542,13 @@ exports.updateUser = async (req, reply) => {
 };
 
 // login User
+/**
+ * Authenticate user.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.loginUser = async (req, reply) => {
   try {
     const pass = encryptPassword(req.body.password);
@@ -640,6 +647,13 @@ exports.loginUser = async (req, reply) => {
 };
 
 //forget password
+/**
+ * Handle forgot-password for password.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.forgetPassword = async (req, reply) => {
   try {
     console.log(req.body)
