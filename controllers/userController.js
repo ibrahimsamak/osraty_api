@@ -992,6 +992,13 @@ exports.forgetPassword = async (req, reply) => {
 };
 
 //reset password
+/**
+ * Reset password users.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.resetPasswordUsers = async (req, reply) => {
   try {
     // const pervAdminEmail = await Admins.findOne({ phone_number: req.body.phone_number }).lean()
@@ -1038,6 +1045,13 @@ exports.resetPasswordUsers = async (req, reply) => {
 };
 
 //reset email
+/**
+ * Reset email users.
+ *
+ * @param {object} req - Incoming Fastify request.
+ * @param {object} reply - Fastify reply used to send the response.
+ * @returns {Promise<void>}
+ */
 exports.resetEmailUsers = async (req, reply) => {
   try {
     const pervAdminEmail = await Admins.findOne({
